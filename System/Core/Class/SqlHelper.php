@@ -12,7 +12,7 @@ require_once(dirname(__FILE__).'/../Core.php');
 
 require_once(dirname(__FILE__) .'/../../Config/db.config.php');
 
-require_once(dirname(__FILE__).'/../Class/Abstract/FileClass.php');
+require_once(dirname(__FILE__) . '/../Class/FileClass.php');
 
 class SqlHelper
 {
@@ -223,6 +223,26 @@ class SqlHelper
         return $this;
     }
 
+    public function updateQuery($table,Array $data){
+        $this->query = "UPDATE $table SET";
+        foreach ($data as $k=>$v)
+        {
+            $this->query .= " `$k` = '".$this->database->real_escape_string($v)."',";
+        }
+
+        $this->query = rtrim($this->query,',');
+
+        $this->query .= " WHERE 1=1";
+
+        return $this;
+    }
+
+    public function deleteQuery($table){
+        $this->query = "DELETE FROM $table WHERE 1=1";
+
+        return $this;
+    }
+
     public function getSelectNum(){
         return intval($this->database->query(preg_replace('/SELECT (.*) FROM/','SELECT count(*) num FROM',$this->query,1))->fetch_assoc()['num']);
     }
@@ -244,5 +264,61 @@ class SqlHelper
         $json = $this->getFetchAssoc();
         array_unshift($json,$num);
         return json_encode($json,JSON_UNESCAPED_UNICODE);
+    }
+
+    public function insertExecute(){
+        return $this->execute();
+    }
+
+    public function deleteExecute(){
+        return $this->execute();
+    }
+
+    public function updateExecute(){
+        return $this->execute();
+    }
+
+    private function execute(){
+        $this->database->query($this->query);
+        return $this;
+    }
+
+    public function getAffectedRows(){
+        return $this->database->affected_rows;
+    }
+
+    public function getError(){
+        return $this->database->error;
+    }
+
+    public function getErrorNo(){
+        return $this->database->errno;
+    }
+
+    public function getErrorList(){
+        return $this->database->error_list;
+    }
+
+    public function getErrorMessage(){
+        $err_data = $this->database->error_list;
+        if(count($err_data) == 0)
+        {
+            return null;
+        }
+        $err_data = $err_data[0];
+        $message = "{$err_data['errno']} - ";
+        switch ($err_data['errno']){
+            case 1062 : $message .= "该数据与已有数据重复";break;
+            default : $message .= $err_data['error'];
+        }
+        return $message;
+    }
+
+    public function getErrorMessageJson(){
+        if($this->getErrorMessage() == null)
+        {
+            return null;
+        }
+        return json_encode(Array('error'=>$this->getErrorMessage()),JSON_UNESCAPED_UNICODE);
     }
 }

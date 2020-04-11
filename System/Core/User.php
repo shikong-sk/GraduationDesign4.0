@@ -4,7 +4,7 @@ session_start();
 
 require_once(dirname(__FILE__) .'/Class/SqlHelper.php');
 
-require_once(dirname(__FILE__).'/Class/Abstract/UserClass.php');
+require_once(dirname(__FILE__) . '/Class/Abstract/UserClass.php');
 
 $User = new User();
 
