@@ -4,32 +4,24 @@ require_once(dirname(__FILE__) . '/SqlHelper.php');
 
 //require_once(dirname(__FILE__) . '/FileClass.php');
 
-class StudentClass{
+class TeacherClass{
 
     var $db;
-    var $studentTable;
+    var $teacherTable;
 
     var $model = Array(
-        'studentId' => null,
-        'studentName' => null,
+        'teacherId' => null,
+        'teacherName' => null,
         'gender' => null,
-        'both' => null,
         'salt' => null,
         'password' => null,
         'contact' => null,
-        'grade' => null,
-        'years' => null,
         'departmentId' => null,
         'departmentName' => null,
-        'majorId' => null,
-        'majorName' => null,
-        'classId' => null,
-        'class' => null,
-        'seat' => null,
         'active' =>null,
         'idCard' => null,
         'address' => null,
-        'studentImg' => null,
+        'teacherImg' => null,
     );
 
     var $filter = Array(
@@ -37,18 +29,18 @@ class StudentClass{
         'num' => null,
     );
 
-    var $studentId;
-    var $studentName;
+    var $teacherId;
+    var $teacherName;
 
     public function __construct()
     {
         $this->db = new SqlHelper();
         if(isset($_SESSION['ms_user']))
         {
-            $this->studentId = $_SESSION['ms_id'];
-            $this->studentName = $_SESSION['ms_user'];
+            $this->teacherId = $_SESSION['ms_id'];
+            $this->teacherName = $_SESSION['ms_user'];
         }
-        $this->studentTable = $this->db->db_table_prefix."_".SqlHelper::STUDENT;
+        $this->teacherTable = $this->db->db_table_prefix."_".SqlHelper::TEACHER;
     }
 
     public function test($data,$filter=""){
@@ -101,94 +93,7 @@ class StudentClass{
             }
         }
     }
-
-    public function register($data){
-        if(isset($_SESSION['ms_id']) || isset($_SESSION['ms_user']))
-        {
-            return json_encode(Array('error'=>'您已登录，无需进行此操作'),JSON_UNESCAPED_UNICODE);
-        }
-
-        if (!is_array($data)) {
-            if(!is_string($data)){
-                return json_encode(Array("error"=>"JSON data 解析失败"),JSON_UNESCAPED_UNICODE);
-            }
-
-            if(strlen($data) == 0)
-            {
-                return json_encode(Array("error"=>"JSON data 解析失败"),JSON_UNESCAPED_UNICODE);
-            }
-
-            $data = json_decode($data, true);
-            if(!$data){
-                return json_encode(Array("error"=>"JSON data 解析失败"),JSON_UNESCAPED_UNICODE);
-            }
-        }
-
-        foreach ($data as $k=>$v)
-        {
-            if(!array_key_exists($k,$this->model))
-            {
-                unset($data[$k]);
-            }
-        }
-
-        if( isset($data['studentId']) && isset($data['studentName']) && isset($data['gender']) && isset($data['both']) && isset($data['password']) &&
-            isset($data['grade']) && isset($data['years']) && isset($data['departmentId']) && isset($data['majorId']) && isset($data['classId']) && isset($data['class'])
-            && isset($data['seat']) && isset($data['idCard']) )
-        {
-
-            if($data['classId'] != $data['grade'].$data['years'].$data['departmentId'].$data['majorId'].$data['class'])
-            {
-                return json_encode(Array('error'=>'班级 与相关信息不匹配'),JSON_UNESCAPED_UNICODE);
-            }
-
-            if($data['studentId'] != $data['classId'].$data['seat'])
-            {
-                return json_encode(Array('error'=>'学号 与相关信息不匹配'),JSON_UNESCAPED_UNICODE);
-            }
-
-            $password = $data['password'];
-            unset($data['password']);
-
-            $query = $this->db->selectQuery('*',$this->studentTable);
-
-            $query->andQueryList($data);
-
-            if($query->selectLimit(1,1)->getSelectNum() != 1)
-            {
-                return json_encode(Array('error'=>'此学生信息不存在 或 学生信息错误'),JSON_UNESCAPED_UNICODE);
-            }
-
-            $query = $this->db->selectQuery('*',$this->studentTable)->andQueryList($data)->andQuery('active','0');
-
-            if($query->selectLimit(1,1)->getSelectNum() != 1)
-            {
-                return json_encode(Array('error'=>'此学生账号已激活'),JSON_UNESCAPED_UNICODE);
-            }
-
-            $salt = ''; // 随机加密密钥
-            while (strlen($salt) < 6) {
-                $x = mt_rand(0, 9);
-                $salt .= $x;
-            }
-            $updateData['salt'] = $salt;
-            $updateData['password'] = sha1($password . $salt); // sha1哈希加密
-            $updateData['active'] = '1';
-
-            if($this->db->updateQuery($this->studentTable,$updateData)->andQueryList($data)->updateExecute()->getAffectedRows() == 1)
-            {
-                return json_encode(Array('success'=>"{$data['studentId']} - {$data['studentName']} 账号激活成功"),JSON_UNESCAPED_UNICODE);
-            }
-            else{
-                return json_encode(Array('success'=>"{$data['studentId']} - {$data['studentName']} 账号激活失败"),JSON_UNESCAPED_UNICODE);
-            }
-        }
-        else{
-            return json_encode(Array('error'=>'学生信息填写不完整'),JSON_UNESCAPED_UNICODE);
-        }
-
-    }
-
+    
     public function login($data){
         if(isset($_SESSION['ms_id']) || isset($_SESSION['ms_user']))
         {
@@ -212,7 +117,7 @@ class StudentClass{
         }
 
         $model = Array(
-            'studentId' => null,
+            'teacherId' => null,
             'password' => null
         );
 
@@ -224,19 +129,19 @@ class StudentClass{
             }
         }
 
-        if(isset($data['studentId']) && isset($data['password']))
+        if(isset($data['teacherId']) && isset($data['password']))
         {
-            $salt = $this->db->selectQuery('salt',$this->studentTable)->selectLimit(1,1)->getFetchAssoc()[0]['salt'];
+            $salt = $this->db->selectQuery('salt',$this->teacherTable)->selectLimit(1,1)->getFetchAssoc()[0]['salt'];
 
             $data['password'] = sha1($data['password'].$salt);
 
-            $query = $this->db->selectQuery('studentId,studentName',$this->studentTable)->andQueryList($data)->selectLimit(1,1);
+            $query = $this->db->selectQuery('teacherId,teacherName',$this->teacherTable)->andQueryList($data)->selectLimit(1,1);
             if($query->getSelectNum() == 1)
             {
                 $res = $query->getFetchAssoc()[0];
-                $_SESSION['ms_id'] = $res['studentId'];
-                $_SESSION['ms_user'] = $res['studentName'];
-                $_SESSION['ms_identity'] = "Student";
+                $_SESSION['ms_id'] = $res['teacherId'];
+                $_SESSION['ms_user'] = $res['teacherName'];
+                $_SESSION['ms_identity'] = "Teacher";
                 return json_encode(Array('success'=>'登录成功'),JSON_UNESCAPED_UNICODE);
             }
             else{
@@ -287,7 +192,7 @@ class StudentClass{
         }
 
         $dataModel = Array(
-            'studentId' => null,
+            'teacherId' => null,
         );
         $infoModel = $this->model;
 
@@ -303,7 +208,7 @@ class StudentClass{
             }
         }
 
-        if($data['studentId'] != $_SESSION['ms_id'])
+        if($data['teacherId'] != $_SESSION['ms_id'])
         {
             return json_encode(Array('error'=>'您无权修改他人的信息'),JSON_UNESCAPED_UNICODE);
         }
@@ -317,33 +222,27 @@ class StudentClass{
             }
 
             unset($info['salt']);
-            unset($info['grade']);
-            unset($info['years']);
             unset($info['departmentId']);
             unset($info['departmentName']);
-            unset($info['majorId']);
-            unset($info['majorName']);
-            unset($info['classId']);
-            unset($info['class']);
-            unset($info['seat']);
+            unset($info['permission']);
             unset($info['active']);
 
 
-            $query = $this->db->selectQuery('studentImg',$this->studentTable)->andQueryList($data)->andQuery('active','1')->selectLimit(1,1);
+            $query = $this->db->selectQuery('teacherImg',$this->teacherTable)->andQueryList($data)->selectLimit(1,1);
 
             if($query->getSelectNum() != 1)
             {
-                return json_encode(Array('error'=>'此学生不存在 或 账号未激活'),JSON_UNESCAPED_UNICODE);
+                return json_encode(Array('error'=>'此教工不存在'),JSON_UNESCAPED_UNICODE);
             }
 
             $oImg = "";
             $fileManger = new FileClass();
 
-            if(isset($info['studentImg'])){
-                $oImg = $query->getFetchAssoc()[0]['studentImg'];
+            if(isset($info['teacherImg'])){
+                $oImg = $query->getFetchAssoc()[0]['teacherImg'];
 
-                $info["studentImg"] = $fileManger->uploadUserImage($info["studentImg"]);
-                if($info["studentImg"] == null)
+                $info["teacherImg"] = $fileManger->uploadUserImage($info["teacherImg"]);
+                if($info["teacherImg"] == null)
                 {
                     return json_encode(Array('error'=>'图片上传失败，请稍后再试'),JSON_UNESCAPED_UNICODE);
                 }
@@ -360,11 +259,11 @@ class StudentClass{
                 $info['password'] = sha1($info['password']. $salt); // sha1哈希加密
             }
 
-            $query = $this->db->updateQuery($this->studentTable,$info)->updateLimit(1)->updateExecute();
+            $query = $this->db->updateQuery($this->teacherTable,$info)->updateLimit(1)->updateExecute();
 
             if($query->getAffectedRows() == 1)
             {
-                if(isset($info['studentImg']))
+                if(isset($info['teacherImg']))
                 {
                     if (strlen($oImg) != 0) {
                         $res = $fileManger->deleteFile($oImg);
@@ -374,7 +273,7 @@ class StudentClass{
                         }
 //                        if(array_key_exists('warning',json_decode($res,true)))
 //                        {
-////                            return json_encode(Array('warning'=>'信息修改成功,但'.json_decode($res,true)['warning']),JSON_UNESCAPED_UNICODE);
+//                            return json_encode(Array('warning'=>'信息修改成功,但'.json_decode($res,true)['warning']),JSON_UNESCAPED_UNICODE);
 //                        }
                     }
                 }

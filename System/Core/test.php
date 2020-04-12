@@ -245,8 +245,13 @@ if(!$json)
 error_reporting(E_ALL);
 
 require_once(dirname(__FILE__) .'/Class/StudentClass.php');
+require_once(dirname(__FILE__) .'/Class/TeacherClass.php');
 
+require_once(dirname(__FILE__) .'/Class/DepartmentClass.php');
 $student = new StudentClass();
+$teacher = new TeacherClass();
+
+$department = new DepartmentClass();
 
 ob_flush();
 ob_clean();
@@ -257,11 +262,18 @@ ob_clean();
 //);
 
 header('Content-Type:application/json; charset=utf-8');
-$student->login(Array('studentId'=>'1730502127','password'=>'123+AbC'));
+//$student->login(Array('studentId'=>'1730502127','password'=>'123+AbC'));
+
+$teacher->login(Array('teacherId'=>'1','password'=>'123+AbC'));
+
+//echo $teacher->updateInfo(Array('teacherId'=>'1','password'=>'123+AbC'),Array('teacherImg'=>$img,'password'=>'123+AbC','salt'=>'123123'));
+
+error_reporting(E_ALL);
+echo $department->getDepartmentList(Array('departmentName'=>'计算机','active'=>1),Array('page'=>'1','num'=>'10'));
+
+//echo $student->updateInfo(Array('studentId'=>'1730502127','password'=>'123+AbC'),Array('studentImg'=>$img,'password'=>'123+AbC','salt'=>'123123'));
+
 $student->logout();
-
-echo $student->updateInfo(Array('studentId'=>'1730502127','password'=>'123+AbC'),Array('studentImg'=>$img));
-
 //$file = new FileClass();
 
 //echo $file->uploadUserImage($img);

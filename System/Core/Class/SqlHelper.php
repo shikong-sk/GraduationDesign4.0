@@ -244,6 +244,7 @@ class SqlHelper
     }
 
     public function getSelectNum(){
+//        var_dump(preg_replace('/SELECT (.*) FROM/','SELECT count(*) num FROM',$this->query,1));
         return intval($this->database->query(preg_replace('/SELECT (.*) FROM/','SELECT count(*) num FROM',$this->query,1))->fetch_assoc()['num']);
     }
 
@@ -257,6 +258,20 @@ class SqlHelper
             $resNum++;
         }
         return $json;
+    }
+
+    public function orderBy($field,$order)
+    {
+        if(intval($order) == 1 || strtoupper($order) == 'ASC')
+        {
+            $this->query .= " ORDER BY {$field} ASC";
+        }
+        else if(intval($order) == 0  || strtoupper($order) == 'DESC')
+        {
+            $this->query .= " ORDER BY {$field} DESC";
+        }
+
+        return $this;
     }
 
     public function getFetchAssocNumJson(){
@@ -308,7 +323,9 @@ class SqlHelper
         $err_data = $err_data[0];
         $message = "{$err_data['errno']} - ";
         switch ($err_data['errno']){
+            case 1060 : $message .= "该数据与已有数据重复";break;
             case 1062 : $message .= "该数据与已有数据重复";break;
+            case 1065 : $message .= "无效的 SQL 语句";break;
             default : $message .= $err_data['error'];
         }
         return $message;
