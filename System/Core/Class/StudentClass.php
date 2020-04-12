@@ -398,4 +398,17 @@ class StudentClass{
             return json_encode(Array('error'=>'您尚未登录，无需进行此操作'), JSON_UNESCAPED_UNICODE);
         }
     }
+
+    public function getUserInfo(){
+        if(!isset($_SESSION['ms_id']) || !isset($_SESSION['ms_user']))
+        {
+            return json_encode(Array('error'=>'请登录后再进行此操作'),JSON_UNESCAPED_UNICODE);
+        }
+        else if($_SESSION['ms_identity'] != 'Student'){
+            return json_encode(Array('error'=>'接口调用错误，此用户不是学生账号'),JSON_UNESCAPED_UNICODE);
+        }
+
+        return $this->db->selectQuery('studentId,studentName,gender,`both`,contact,grade,years,departmentId,
+        departmentName,majorId,majorName,class,classId,seat,idCard,address,studentImg',$this->studentTable)->andQueryList(Array('studentId'=>$_SESSION['ms_id']))->selectLimit(1,1)->getFetchAssocNumJson();
+    }
 }

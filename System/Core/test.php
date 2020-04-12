@@ -262,14 +262,17 @@ ob_clean();
 //);
 
 header('Content-Type:application/json; charset=utf-8');
-//$student->login(Array('studentId'=>'1730502127','password'=>'123+AbC'));
 
+//$student->login(Array('studentId'=>'1730502127','password'=>'123+AbC'));
 $teacher->login(Array('teacherId'=>'1','password'=>'123+AbC'));
 
 //echo $teacher->updateInfo(Array('teacherId'=>'1','password'=>'123+AbC'),Array('teacherImg'=>$img,'password'=>'123+AbC','salt'=>'123123'));
 
 error_reporting(E_ALL);
-echo $department->getDepartmentList(Array('departmentName'=>'计算机','active'=>1),Array('page'=>'1','num'=>'10'));
+//echo $student->getUserInfo();
+echo $teacher->getUserInfo();
+
+//echo $department->getDepartmentList(Array('departmentName'=>'计算机','active'=>1),Array('page'=>'1','num'=>'10'));
 
 //echo $student->updateInfo(Array('studentId'=>'1730502127','password'=>'123+AbC'),Array('studentImg'=>$img,'password'=>'123+AbC','salt'=>'123123'));
 

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- 主机： localhost
--- 生成日期： 2020-04-12 15:50:04
+-- 生成日期： 2020-04-13 02:12:58
 -- 服务器版本： 5.5.29-log
 -- PHP 版本： 5.6.9
 
@@ -189,17 +189,18 @@ CREATE TABLE `ms_teacher` (
   `password` char(40) NOT NULL COMMENT '密码hash',
   `idCard` char(18) NOT NULL COMMENT '身份证号码',
   `email` varchar(50) NOT NULL COMMENT '邮箱地址',
-  `permission` char(1) NOT NULL COMMENT '教工权限 0:超级管理员 1:管理员 2:普通教工',
+  `permission` char(1) NOT NULL DEFAULT '2' COMMENT '教工权限 0:超级管理员 1:管理员 2:普通教工',
   `address` varchar(255) NOT NULL COMMENT '联系地址',
-  `active` tinyint(1) NOT NULL
+  `active` tinyint(1) NOT NULL,
+  `both` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- 转存表中的数据 `ms_teacher`
 --
 
-INSERT INTO `ms_teacher` (`teacherId`, `teacherName`, `departmentId`, `departmentName`, `teacherImg`, `contact`, `gender`, `salt`, `password`, `idCard`, `email`, `permission`, `address`, `active`) VALUES
-('1', '测试', '05', '', './Storage/User/Teacher/1_测试_E467BAD6-F9EE-309C-269F-25F1A698CB13.png', '', '', '214744', '1a888aab1a10103cef262194492fb6ca5f29d4c3', '', '', '', '', 1);
+INSERT INTO `ms_teacher` (`teacherId`, `teacherName`, `departmentId`, `departmentName`, `teacherImg`, `contact`, `gender`, `salt`, `password`, `idCard`, `email`, `permission`, `address`, `active`, `both`) VALUES
+('1', '测试', '05', '', './Storage/User/Teacher/1_测试_668F80F4-AD98-7883-EEF6-D1660B3AEE44.png', '', '', '294167', '37e7e016fa6bc1a02a4ab29fdbb1010af974e97e', '', '', '2', '', 1, '0000-00-00');
 
 --
 -- 转储表的索引
@@ -280,7 +281,7 @@ ALTER TABLE `ms_student`
 -- 表的索引 `ms_teacher`
 --
 ALTER TABLE `ms_teacher`
-  ADD PRIMARY KEY (`teacherId`),
+  ADD PRIMARY KEY (`teacherId`,`permission`) USING BTREE,
   ADD UNIQUE KEY `uniqueTeacherData` (`teacherId`,`departmentId`) USING BTREE,
   ADD KEY `teacherId` (`teacherId`),
   ADD KEY `departmentId` (`departmentId`),

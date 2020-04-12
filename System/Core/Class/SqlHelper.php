@@ -244,6 +244,8 @@ class SqlHelper
     }
 
     public function getSelectNum(){
+        $this->query = str_replace("\n",'',$this->query);
+//        var_dump($this->query);
 //        var_dump(preg_replace('/SELECT (.*) FROM/','SELECT count(*) num FROM',$this->query,1));
         return intval($this->database->query(preg_replace('/SELECT (.*) FROM/','SELECT count(*) num FROM',$this->query,1))->fetch_assoc()['num']);
     }
