@@ -248,11 +248,14 @@ require_once(dirname(__FILE__) .'/Class/StudentClass.php');
 require_once(dirname(__FILE__) .'/Class/TeacherClass.php');
 
 require_once(dirname(__FILE__) .'/Class/DepartmentClass.php');
+require_once(dirname(__FILE__) .'/Class/MajorClass.php');
+
 $student = new StudentClass();
 $teacher = new TeacherClass();
 
 $department = new DepartmentClass();
 
+$major = new MajorClass();
 ob_flush();
 ob_clean();
 //$student->register(
@@ -264,19 +267,24 @@ ob_clean();
 header('Content-Type:application/json; charset=utf-8');
 
 //$student->login(Array('studentId'=>'1730502127','password'=>'123+AbC'));
+error_reporting(E_ALL);
 $teacher->login(Array('teacherId'=>'1','password'=>'123+AbC'));
 
 //echo $teacher->updateInfo(Array('teacherId'=>'1','password'=>'123+AbC'),Array('teacherImg'=>$img,'password'=>'123+AbC','salt'=>'123123'));
 
-error_reporting(E_ALL);
+
 //echo $student->getUserInfo();
 //echo $teacher->getUserInfo();
 
-//echo $department->addDepartment(Array('departmentId'=>'11','departmentName'=>'测试','active'=>'0'));
+//echo $department->addDepartment(Array('departmentId'=>'06','departmentName'=>'艺术体育系','active'=>'1'));
 
-echo $department->updateDepartment(Array('departmentId'=>'05','departmentName'=>'计算机系','active'=>'1'));
+//echo $department->updateDepartment(Array('departmentId'=>'05','departmentName'=>'计算机系','active'=>'1'));
+//echo $department->deleteDepartment(Array('departmentId'=>'05'));
 
 //echo $department->getDepartmentList(Array('departmentName'=>'计算机','active'=>1),Array('page'=>'1','num'=>'10'));
+
+//echo $major->getMajorList(Array(),Array());
+echo $major->addMajor(Array('departmentId'=>'05','majorId'=>'07','majorName'=>'云计算','active'=>'1'));
 
 //echo $student->updateInfo(Array('studentId'=>'1730502127','password'=>'123+AbC'),Array('studentImg'=>$img,'password'=>'123+AbC','salt'=>'123123'));
 
