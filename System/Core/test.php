@@ -270,7 +270,11 @@ $teacher->login(Array('teacherId'=>'1','password'=>'123+AbC'));
 
 error_reporting(E_ALL);
 //echo $student->getUserInfo();
-echo $teacher->getUserInfo();
+//echo $teacher->getUserInfo();
+
+//echo $department->addDepartment(Array('departmentId'=>'11','departmentName'=>'测试','active'=>'0'));
+
+echo $department->updateDepartment(Array('departmentId'=>'05','departmentName'=>'计算机系','active'=>'1'));
 
 //echo $department->getDepartmentList(Array('departmentName'=>'计算机','active'=>1),Array('page'=>'1','num'=>'10'));
 
