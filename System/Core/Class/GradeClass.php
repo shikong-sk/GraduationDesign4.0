@@ -2,7 +2,7 @@
 
 require_once(dirname(__FILE__) . '/SqlHelper.php');
 
-class MajorClass
+class GradeClass
 {
 
     var $db;
@@ -22,7 +22,8 @@ class MajorClass
         'departmentName' => null,
         'majorId' => null,
         'majorName' => null,
-        'active' => null,
+        'grade'=>null,
+        'classNum' => null,
     );
 
     var $filter = Array(
@@ -44,7 +45,7 @@ class MajorClass
         $this->gradeTable = $this->db->db_table_prefix . "_" . SqlHelper::GRADE;
     }
 
-    public function getMajorList($data, $filter)
+    public function getGradeList($data, $filter)
     {
         if (!is_array($data)) {
             if (!is_string($data)) {
@@ -105,7 +106,7 @@ class MajorClass
             return json_encode(Array('error' => 'filter page 或 num 参数不合法'), JSON_UNESCAPED_UNICODE);
         }
 
-        $query = $this->db->selectQuery('*', $this->majorTable);
+        $query = $this->db->selectQuery('*', $this->gradeTable);
 
         if (isset($data['departmentName'])) {
             $departmentName_Like = $data['departmentName'];
@@ -121,11 +122,11 @@ class MajorClass
         $query->andQueryList($data);
 
 
-        return $query->orderBy('departmentId,majorId', 1)->selectLimit($page, $num)->getFetchAssocNumJson();
+        return $query->orderBy('grade,departmentId,majorId', 1)->selectLimit($page, $num)->getFetchAssocNumJson();
 
     }
 
-    public function addMajor($data)
+    public function addGrade($data)
     {
         if (!isset($_SESSION['ms_id']) || !isset($_SESSION['ms_user'])) {
             return json_encode(Array('error' => '请登录后再进行此操作'), JSON_UNESCAPED_UNICODE);
@@ -156,7 +157,9 @@ class MajorClass
             }
         }
 
+
         unset($this->model['departmentName']);
+        unset($this->model['majorName']);
 
 
         foreach ($this->model as $k => $v) {
@@ -164,14 +167,14 @@ class MajorClass
                 return json_encode(Array('error' => "data 缺少 $k 参数"), JSON_UNESCAPED_UNICODE);
             } else {
                 switch ($k) {
-                    case 'active':
-                        if ($data[$k] != '0' && $data[$k] != '1') {
-                            return json_encode(Array('error' => 'active 参数错误'),JSON_UNESCAPED_UNICODE);
+                    case 'classNum':
+                        if (strlen($data[$k]) != 1 || intval($data[$k]) > 9 ) {
+                            return json_encode(Array('error' => 'classNum 参数错误'),JSON_UNESCAPED_UNICODE);
                         }
                         break;
                     case 'departmentId':
                         if (strlen($data[$k]) != 2) {
-                            return json_encode(Array('error' => 'departmentId 参数错误,departmentId 参数需要2个字符 例：01'));
+                            return json_encode(Array('error' => 'departmentId 参数错误,departmentId 参数需要2个字符 例：01'),JSON_UNESCAPED_UNICODE);
                         } else if ($this->db->selectQuery('*', $this->departmentTable)->andQuery('departmentId', $data[$k])->getSelectNum() == 0) {
                             return json_encode(Array('error' => '此院系不存在'),JSON_UNESCAPED_UNICODE);
                         }
@@ -181,14 +184,21 @@ class MajorClass
                         break;
                     case 'majorId':
                         if (strlen($data[$k]) != 2) {
-                            return json_encode(Array('error' => 'majorId 参数错误,majorId 参数需要2个字符 例：01'));
-                        } else if ($this->db->selectQuery('*', $this->majorTable)->andQueryList(Array('departmentId'=>$data['departmentId'],'majorId'=>$data[$k]))->getSelectNum() != 0) {
-                            return json_encode(Array('error' => '此编号已被使用'),JSON_UNESCAPED_UNICODE);
+                            return json_encode(Array('error' => 'majorId 参数错误,majorId 参数需要2个字符 例：01'),JSON_UNESCAPED_UNICODE);
+                        } else if ($this->db->selectQuery('*', $this->majorTable)->andQueryList(Array('departmentId'=>$data['departmentId'],'majorId'=>$data[$k]))->getSelectNum() == 0) {
+                            return json_encode(Array('error' => '此专业不存在'),JSON_UNESCAPED_UNICODE);
+                        }
+                        else{
+                            $data['majorName'] = $this->db->selectQuery('majorName',$this->majorTable)->andQueryList(Array('departmentId'=>$data['departmentId'],'majorId'=>$data['majorId']))->getFetchAssoc()[0]['majorName'];
                         }
                         break;
-                    case 'majorName':
-                        if (strlen($data[$k]) == 0) {
-                            return json_encode(Array('error' => '专业名称不能为空'),JSON_UNESCAPED_UNICODE);
+                    case 'grade':
+                        if(strlen($data[$k]) != 2)
+                        {
+                            return json_encode(Array('error' => 'grade 参数错误,grade 参数需要2个字符 例：01'),JSON_UNESCAPED_UNICODE);
+                        }
+                        else if($this->db->selectQuery('*',$this->gradeTable)->andQueryList(Array('departmentId'=>$data['departmentId'],'majorId'=>$data['majorId'],'grade'=>$data[$k]))->getSelectNum() != 0){
+                            return json_encode(Array('error'=>"{$data['grade']} 级 {$data['departmentName']}-{$data['majorName']}已经开设"),JSON_UNESCAPED_UNICODE);
                         }
                         break;
                 }
@@ -196,15 +206,15 @@ class MajorClass
         }
 
 
-        if ($this->db->insertQuery($this->majorTable, $data)->insertExecute()->getAffectedRows() == 1) {
-            return json_encode(Array('success' => '专业添加成功'), JSON_UNESCAPED_UNICODE);
+        if ($this->db->insertQuery($this->gradeTable, $data)->insertExecute()->getAffectedRows() == 1) {
+            return json_encode(Array('success' => "{$data['grade']} 级 {$data['departmentName']}-{$data['majorName']} 开设成功"), JSON_UNESCAPED_UNICODE);
         } else {
-            return json_encode(Array('error' => '院系添加失败,请检查参数是否正确'), JSON_UNESCAPED_UNICODE);
+            return json_encode(Array('error' => "{$data['grade']} 级 {$data['departmentName']}-{$data['majorName']} 开设失败,请检查参数是否正确"), JSON_UNESCAPED_UNICODE);
         }
 
     }
 
-    public function updateMajor($data)
+    public function updateGrade($data)
     {
         if (!isset($_SESSION['ms_id']) || !isset($_SESSION['ms_user'])) {
             return json_encode(Array('error' => '请登录后再进行此操作'), JSON_UNESCAPED_UNICODE);
@@ -243,38 +253,51 @@ class MajorClass
         {
             return json_encode(Array('error'=>'majorId 为必填参数'),JSON_UNESCAPED_UNICODE);
         }
+        else if(!isset($data['grade']))
+        {
+            return json_encode(Array('error'=>'grade 为必填参数'),JSON_UNESCAPED_UNICODE);
+        }
+        else if(!isset($data['classNum']))
+        {
+            return json_encode(Array('error'=>'classNum 为必填参数'),JSON_UNESCAPED_UNICODE);
+        }
 
         $model = $this->model;
 
         unset($model['departmentName']);
+        unset($model['majorName']);
 
         foreach ($model as $k => $v) {
             if (!isset($data[$k])) {
                 return json_encode(Array('error' => "data 缺少 $k 参数"), JSON_UNESCAPED_UNICODE);
             } else {
                 switch ($k) {
-                    case 'active':
-                        if ($data[$k] != '0' && $data[$k] != '1') {
-                            return json_encode(Array('error' => 'active 参数错误'),JSON_UNESCAPED_UNICODE);
+                    case 'classNum':
+                        if (strlen($data[$k]) != 1 || intval($data[$k]) > 9 ) {
+                            return json_encode(Array('error' => 'classNum 参数错误'),JSON_UNESCAPED_UNICODE);
                         }
                         break;
                     case 'departmentId':
                         if (strlen($data[$k]) != 2) {
-                            return json_encode(Array('error' => 'departmentId 参数错误,departmentId 参数需要2个字符 例：01'),JSON_UNESCAPED_UNICODE);
+                            return json_encode(Array('error' => 'departmentId 参数错误,departmentId 参数需要2个字符 例：01'));
                         } else if ($this->db->selectQuery('*', $this->departmentTable)->andQuery('departmentId', $data[$k])->getSelectNum() == 0) {
-                            return json_encode(Array('error' => '该院系不存在'),JSON_UNESCAPED_UNICODE);
+                            return json_encode(Array('error' => '该院系不存在'));
                         }
                         break;
                     case 'majorId':
                         if (strlen($data[$k]) != 2) {
-                            return json_encode(Array('error' => 'majorId 参数错误,majorId 参数需要2个字符 例：01'),JSON_UNESCAPED_UNICODE);
+                            return json_encode(Array('error' => 'majorId 参数错误,majorId 参数需要2个字符 例：01'));
                         } else if ($this->db->selectQuery('*', $this->majorTable)->andQueryList(Array('departmentId'=>$data['departmentId'],'majorId'=>$data[$k]))->getSelectNum() == 0) {
-                            return json_encode(Array('error' => '该专业不存在'),JSON_UNESCAPED_UNICODE);
+                            return json_encode(Array('error' => '该专业不存在'));
                         }
                         break;
-                    case 'majorName':
-                        if (strlen($data[$k]) == 0) {
-                            return json_encode(Array('error' => '专业名称不能为空'),JSON_UNESCAPED_UNICODE);
+                    case 'grade':
+                        if(strlen($data[$k]) != 2)
+                        {
+                            return json_encode(Array('error' => 'grade 参数错误,grade 参数需要2个字符 例：01'));
+                        }
+                        else if ($this->db->selectQuery('*', $this->gradeTable)->andQueryList(Array('departmentId'=>$data['departmentId'],'majorId'=>$data['majorId'],'grade'=>$data[$k]))->getSelectNum() == 0) {
+                            return json_encode(Array('error' => '该年级未开设此专业'));
                         }
                         break;
                 }
@@ -285,25 +308,24 @@ class MajorClass
         unset($data["departmentId"]);
         $majorId = $data['majorId'];
         unset($data["majorId"]);
+        $grade = $data["grade"];
+        unset($data["grade"]);
 
-        if($this->db->updateQuery($this->majorTable,$data)->andQueryList(Array('departmentId'=>$departmentId,'majorId'=>$majorId))->updateLimit(1)->updateExecute()->getAffectedRows() == 1)
+        if($this->db->selectQuery('*',$this->classTable)->andQueryList(Array('departmentId'=>$departmentId,'majorId'=>$majorId,'grade'=>$grade))->getSelectNum() > intval($data["classNum"]))
         {
-            $data = $this->db->selectQuery('majorId,MajorName',$this->majorTable)->andQueryList(Array('departmentId'=>$departmentId,'majorId'=>$majorId))->getFetchAssoc()[0];
-
-            $this->db->updateQuery($this->gradeTable,$data)->andQueryList(Array('departmentId'=>$departmentId,'majorId'=>$majorId))->updateExecute();
-            $this->db->updateQuery($this->classTable,$data)->andQueryList(Array('departmentId'=>$departmentId,'majorId'=>$majorId))->updateExecute();
-            $this->db->updateQuery($this->studentTable,$data)->andQueryList(Array('departmentId'=>$departmentId,'majorId'=>$majorId))->updateExecute();
-            $this->db->updateQuery($this->teacherTable,$data)->andQueryList(Array('departmentId'=>$departmentId,'majorId'=>$majorId))->updateExecute();
-
-            return json_encode(Array('success'=>'专业信息更新成功'),JSON_UNESCAPED_UNICODE);
+            return json_encode(Array('error'=>'原班级数量大于所设定的班级数量'),JSON_UNESCAPED_UNICODE);
+        }
+        else if($this->db->updateQuery($this->gradeTable,$data)->andQueryList(Array('departmentId'=>$departmentId,'majorId'=>$majorId,'grade'=>$grade))->updateLimit(1)->updateExecute()->getAffectedRows() == 1)
+        {
+            return json_encode(Array('success'=>'年级信息更新成功'),JSON_UNESCAPED_UNICODE);
         }
         else{
-            return json_encode(Array('info'=>'专业信息未更改'),JSON_UNESCAPED_UNICODE);
+            return json_encode(Array('info'=>'年级信息未变更'),JSON_UNESCAPED_UNICODE);
         }
 
     }
 
-    public function deleteMajor($data)
+    public function deleteGrade($data)
     {
         if (!isset($_SESSION['ms_id']) || !isset($_SESSION['ms_user'])) {
             return json_encode(Array('error' => '请登录后再进行此操作'), JSON_UNESCAPED_UNICODE);
@@ -347,26 +369,29 @@ class MajorClass
         else if(strlen($data['majorId']) != 2){
             return json_encode(Array('error' => 'majorId 参数错误,majorId 参数需要2个字符 例：01'));
         }
+        else if(!isset($data['grade']))
+        {
+            return json_encode(Array('error'=>'grade 为必填参数'),JSON_UNESCAPED_UNICODE);
+        }
+        else if(strlen($data['grade']) != 2){
+            return json_encode(Array('error' => 'grade 参数错误,grade 参数需要2个字符 例：01'));
+        }
         else{
-            if($this->db->selectQuery('*',$this->studentTable)->andQueryList(Array('departmentId'=>$data['departmentId'],'majorId'=>$data["majorId"]))->getSelectNum() != 0)
+            if($this->db->selectQuery('*',$this->studentTable)->andQueryList(Array('departmentId'=>$data['departmentId'],'majorId'=>$data["majorId"],"grade"=>$data["grade"]))->getSelectNum() != 0)
             {
                 return json_encode(Array('error'=>'该专业已有学生，请先修改/删除其相应的学生信息后再进行此操作'),JSON_UNESCAPED_UNICODE);
             }
-            else if($this->db->selectQuery('*',$this->classTable)->andQueryList(Array('departmentId'=>$data['departmentId'],'majorId'=>$data["majorId"]))->getSelectNum() != 0)
+            else if($this->db->selectQuery('*',$this->classTable)->andQueryList(Array('departmentId'=>$data['departmentId'],'majorId'=>$data["majorId"],"grade"=>$data["grade"]))->getSelectNum() != 0)
             {
                 return json_encode(Array('error'=>'该专业已有班级，请先删除其对应的信息后再进行此操作'),JSON_UNESCAPED_UNICODE);
             }
-            else if($this->db->selectQuery('*',$this->gradeTable)->andQueryList(Array('departmentId'=>$data['departmentId'],'majorId'=>$data["majorId"]))->getSelectNum() != 0)
-            {
-                return json_encode(Array('error'=>'该专业已有年级，请先删除其对应的信息后再进行此操作'),JSON_UNESCAPED_UNICODE);
-            }
             else{
-                if($this->db->deleteQuery($this->majorTable)->andQueryList(Array('departmentId'=>$data['departmentId'],'majorId'=>$data["majorId"]))->deleteExecute()->getAffectedRows() == 1)
+                if($this->db->deleteQuery($this->gradeTable)->andQueryList(Array('departmentId'=>$data['departmentId'],'majorId'=>$data["majorId"],"grade"=>$data["grade"]))->deleteExecute()->getAffectedRows() == 1)
                 {
-                    return json_encode(Array('success'=>'专业删除成功'),JSON_UNESCAPED_UNICODE);
+                    return json_encode(Array('success'=>'专业撤销成功'),JSON_UNESCAPED_UNICODE);
                 }
                 else{
-                    return json_encode(Array('error'=>'专业删除失败'),JSON_UNESCAPED_UNICODE);
+                    return json_encode(Array('error'=>'专业撤销失败'),JSON_UNESCAPED_UNICODE);
                 }
             }
         }

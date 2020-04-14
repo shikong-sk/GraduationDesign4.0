@@ -249,13 +249,15 @@ require_once(dirname(__FILE__) .'/Class/TeacherClass.php');
 
 require_once(dirname(__FILE__) .'/Class/DepartmentClass.php');
 require_once(dirname(__FILE__) .'/Class/MajorClass.php');
+require_once(dirname(__FILE__) .'/Class/GradeClass.php');
 
 $student = new StudentClass();
 $teacher = new TeacherClass();
 
 $department = new DepartmentClass();
-
 $major = new MajorClass();
+$grade = new GradeClass();
+
 ob_flush();
 ob_clean();
 //$student->register(
@@ -284,16 +286,30 @@ $teacher->login(Array('teacherId'=>'1','password'=>'123+AbC'));
 //echo $department->getDepartmentList(Array('departmentName'=>'计算机','active'=>1),Array('page'=>'1','num'=>'10'));
 
 //echo $major->getMajorList(Array(),Array());
-echo $major->addMajor(Array('departmentId'=>'05','majorId'=>'07','majorName'=>'云计算','active'=>'1'));
+//echo $major->addMajor(Array('departmentId'=>'05','majorId'=>'07','majorName'=>'云计算','active'=>'1'));
+
+//echo $major->updateMajor(Array('departmentId'=>'05','majorId'=>'02','majorName'=>'计算机应用技术','active'=>'1'));
+
+//echo $major->deleteMajor(Array('departmentId'=>'05','majorId'=>'02'));
+
+//echo $grade->getGradeList(Array(),Array());
+
+//echo $grade->addGrade(Array("grade"=>"17","departmentId"=>"05","majorId"=>"02"));
+
+//echo $grade->updateGrade(Array("departmentId"=>"05","majorId"=>"02","grade"=>"17","classNum"=>"2"));
+
+echo $grade->deleteGrade(Array('departmentId'=>"05","majorId"=>"07","grade"=>"17"));
 
 //echo $student->updateInfo(Array('studentId'=>'1730502127','password'=>'123+AbC'),Array('studentImg'=>$img,'password'=>'123+AbC','salt'=>'123123'));
 
 $student->logout();
 //$file = new FileClass();
 
+
 //echo $file->uploadUserImage($img);
 
 //echo $file->deleteFile($file->uploadUserImage($img));
+
 
 //$a = Array('A'=>'1','B'=>'2','C'=>'3');
 //$t = "INSERT INTO t (";

@@ -231,7 +231,7 @@ class DepartmentClass
                         break;
                     case 'departmentId':
                         if (strlen($data[$k]) != 2) {
-                            return json_encode(Array('error' => 'departmentId 参数错误,departmentId 参数需要2个字符 例：01'));
+                            return json_encode(Array('error' => 'departmentId 参数错误,departmentId 参数需要2个字符 例：01'),JSON_UNESCAPED_UNICODE);
                         } else if ($this->db->selectQuery('*', $this->departmentTable)->andQuery('departmentId', $data[$k])->getSelectNum() == 0) {
                             return json_encode(Array('error' => '该院系不存在'),JSON_UNESCAPED_UNICODE);
                         }
