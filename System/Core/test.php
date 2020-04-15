@@ -308,11 +308,15 @@ $teacher->login(Array('teacherId'=>'1','password'=>'123+AbC'));
 
 //echo $grade->deleteGrade(Array('departmentId'=>"05","majorId"=>"07","grade"=>"17"));
 
-echo $class->getClassList(Array("classId"=>"17305"),Array('page'=>"1","num"=>"10"));
+//echo $class->getClassList(Array("classId"=>"17305"),Array('page'=>"1","num"=>"10"));
+//
+//echo $class->addClass(Array("grade"=>"17","departmentId"=>"05","majorId"=>"02","years"=>"3","class"=>"2","classId"=>"17305022"));
+//
+//echo $class->deleteClass(Array("grade"=>"17","departmentId"=>"05","majorId"=>"02","years"=>"3","class"=>"2","classId"=>"17305022"));
 
-echo $class->addClass(Array("grade"=>"17","departmentId"=>"05","majorId"=>"02","years"=>"3","class"=>"2","classId"=>"17305022"));
+echo $management->addStudent(Array("studentId"=>"1730502101","studentName"=>"郑冰锋","grade"=>"17","years"=>"3","departmentId"=>"05","majorId"=>"02","class"=>"1","classId"=>"17305021","seat"=>"01","idCard"=>"440000199910011111"));
 
-echo $class->deleteClass(Array("grade"=>"17","departmentId"=>"05","majorId"=>"02","years"=>"3","class"=>"2","classId"=>"17305022"));
+echo $management->deleteStudent(Array("studentId"=>"1730502101"));
 
 //echo $student->updateInfo(Array('studentId'=>'1730502127','password'=>'123+AbC'),Array('studentImg'=>$img,'password'=>'123+AbC','salt'=>'123123'));
 

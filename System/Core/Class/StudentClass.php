@@ -310,7 +310,7 @@ class StudentClass{
                 $info['password'] = sha1($info['password']. $salt); // sha1哈希加密
             }
 
-            $query = $this->db->updateQuery($this->studentTable,$info)->updateLimit(1)->updateExecute();
+            $query = $this->db->updateQuery($this->studentTable,$info)->andQueryList(Array("studentId"=>$data["studentId"]))->updateLimit(1)->updateExecute();
 
             if($query->getAffectedRows() == 1)
             {
