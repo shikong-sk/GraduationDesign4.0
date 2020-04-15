@@ -50,6 +50,7 @@ class ManagementClass
         'idCard' => null,
         'address' => null,
         'teacherImg' => null,
+        "permission"=>null
     );
 
     var $filter = array(
@@ -87,6 +88,10 @@ class ManagementClass
         return $this->db->selectQuery('permission', $this->teacherTable)
             ->andQueryList(array("teacherId" => $_SESSION["ms_id"], "teacherName" => $_SESSION["ms_user"]))->selectLimit(1, 1)->getFetchAssoc()[0]["permission"];
     }
+
+    /*
+     * 学生管理模块
+     */
 
     public function addStudent($data)
     {
@@ -251,7 +256,7 @@ class ManagementClass
 
     }
 
-    public function updateStudent($data,$info)
+    public function updateStudent($data, $info)
     {
         $this->checkAccess();
         $permission = $this->getPermission();
@@ -275,43 +280,36 @@ class ManagementClass
         }
 
         if (!is_array($info)) {
-            if(!is_string($info)){
-                die(json_encode(Array("error"=>"JSON info 解析失败"),JSON_UNESCAPED_UNICODE));
+            if (!is_string($info)) {
+                die(json_encode(array("error" => "JSON info 解析失败"), JSON_UNESCAPED_UNICODE));
             }
 
-            if(strlen($info) == 0)
-            {
-                die(json_encode(Array("error"=>"JSON info 解析失败"),JSON_UNESCAPED_UNICODE));
+            if (strlen($info) == 0) {
+                die(json_encode(array("error" => "JSON info 解析失败"), JSON_UNESCAPED_UNICODE));
             }
 
             $info = json_decode($info, true);
-            if(!$info){
-                die(json_encode(Array("error"=>"JSON info 解析失败"),JSON_UNESCAPED_UNICODE));
+            if (!$info) {
+                die(json_encode(array("error" => "JSON info 解析失败"), JSON_UNESCAPED_UNICODE));
             }
         }
 
-        $dataModel = Array(
+        $dataModel = array(
             'studentId' => null,
         );
 
         $infoModel = $this->studentModel;
 
-        foreach ($dataModel as $k=>$v)
-        {
-            if(!isset($data[$k]))
-            {
-                return json_encode(Array('error' => "data 缺少 $k 参数"), JSON_UNESCAPED_UNICODE);
+        foreach ($dataModel as $k => $v) {
+            if (!isset($data[$k])) {
+                return json_encode(array('error' => "data 缺少 $k 参数"), JSON_UNESCAPED_UNICODE);
             }
         }
 
-        foreach ($data as $k=>$v)
-        {
-            if(!array_key_exists($k,$dataModel))
-            {
+        foreach ($data as $k => $v) {
+            if (!array_key_exists($k, $dataModel)) {
                 unset($data[$k]);
-            }
-            else
-            {
+            } else {
                 unset($info[$k]);
             }
         }
@@ -328,67 +326,57 @@ class ManagementClass
         unset($infoModel['class']);
         unset($infoModel['seat']);
 
-        foreach ($info as $k=>$v)
-        {
-            if(!array_key_exists($k,$infoModel))
-            {
+        foreach ($info as $k => $v) {
+            if (!array_key_exists($k, $infoModel)) {
                 unset($info[$k]);
             }
         }
 
-        $query = $this->db->selectQuery('studentImg',$this->studentTable)->andQueryList($data)->selectLimit(1,1);
+        $query = $this->db->selectQuery('studentImg', $this->studentTable)->andQueryList($data)->selectLimit(1, 1);
 
-        if($query->getSelectNum() != 1)
-        {
-            return json_encode(Array('error'=>'此学生不存在'),JSON_UNESCAPED_UNICODE);
+        if ($query->getSelectNum() != 1) {
+            return json_encode(array('error' => '此学生不存在'), JSON_UNESCAPED_UNICODE);
         }
 
         $oImg = "";
         $fileManger = new FileClass();
 
-        if(isset($info['studentImg'])){
+        if (isset($info['studentImg'])) {
             $oImg = $query->getFetchAssoc()[0]['studentImg'];
 
             $info["studentImg"] = $fileManger->uploadUserImage($info["studentImg"]);
-            if($info["studentImg"] == null)
-            {
-                return json_encode(Array('error'=>'图片上传失败，请稍后再试'),JSON_UNESCAPED_UNICODE);
+            if ($info["studentImg"] == null) {
+                return json_encode(array('error' => '图片上传失败，请稍后再试'), JSON_UNESCAPED_UNICODE);
             }
         }
 
-        if(isset($info['password']))
-        {
+        if (isset($info['password'])) {
             $salt = ''; // 随机加密密钥
             while (strlen($salt) < 6) {
                 $x = mt_rand(0, 9);
                 $salt .= $x;
             }
             $info['salt'] = $salt;
-            $info['password'] = sha1($info['password']. $salt); // sha1哈希加密
+            $info['password'] = sha1($info['password'] . $salt); // sha1哈希加密
         }
 
-        $query = $this->db->updateQuery($this->studentTable,$info)->andQueryList(Array("studentId"=>$data["studentId"]))->updateLimit(1)->updateExecute();
+        $query = $this->db->updateQuery($this->studentTable, $info)->andQueryList(array("studentId" => $data["studentId"]))->updateLimit(1)->updateExecute();
 
-        if($query->getAffectedRows() == 1)
-        {
-            if(isset($info['studentImg']))
-            {
+        if ($query->getAffectedRows() == 1) {
+            if (isset($info['studentImg'])) {
                 if (strlen($oImg) != 0) {
                     $res = $fileManger->deleteFile($oImg);
-                    if(array_key_exists('error',json_decode($res,true)))
-                    {
+                    if (array_key_exists('error', json_decode($res, true))) {
                         return $res;
                     }
-                    if(array_key_exists('warning',json_decode($res,true)))
-                    {
-                        return json_encode(Array('warning'=>'信息修改成功,但'.json_decode($res,true)['warning']),JSON_UNESCAPED_UNICODE);
+                    if (array_key_exists('warning', json_decode($res, true))) {
+                        return json_encode(array('warning' => '信息修改成功,但' . json_decode($res, true)['warning']), JSON_UNESCAPED_UNICODE);
                     }
                 }
             }
-            return json_encode(Array('success'=>'学生信息修改成功'),JSON_UNESCAPED_UNICODE);
-        }
-        else{
-            return json_encode(Array('info'=>'学生信息未变更'),JSON_UNESCAPED_UNICODE);
+            return json_encode(array('success' => '学生信息修改成功'), JSON_UNESCAPED_UNICODE);
+        } else {
+            return json_encode(array('info' => '学生信息未变更'), JSON_UNESCAPED_UNICODE);
         }
     }
 
@@ -513,5 +501,96 @@ class ManagementClass
         return $query->orderBy('grade,departmentId,majorId,years,seat', 1)->selectLimit($page, $num)->getFetchAssocNumJson();
     }
 
+    /*
+     * 教工管理模块
+     */
+
+    public function addTeacher($data)
+    {
+
+        $this->checkAccess();
+
+        $permission = $this->getPermission();
+        if ($permission != '0' && $permission != '1') {
+            return json_encode(array("error" => "您没有执行此操作的权限"), JSON_UNESCAPED_UNICODE);
+        }
+
+        if (!is_array($data)) {
+            if (!is_string($data)) {
+                return json_encode(array("error" => "JSON data 解析失败"), JSON_UNESCAPED_UNICODE);
+            }
+
+            if (strlen($data) == 0) {
+                return json_encode(array("error" => "JSON data 解析失败"), JSON_UNESCAPED_UNICODE);
+            }
+
+            $data = json_decode($data, true);
+            if (!$data) {
+                return json_encode(array("error" => "JSON data 解析失败"), JSON_UNESCAPED_UNICODE);
+            }
+        }
+
+
+        foreach ($data as $k => $v) {
+            if (!array_key_exists($k, $this->teacherModel)) {
+                unset($data[$k]);
+            }
+        }
+
+        $model = $this->teacherModel;
+
+        unset($model["teacherId"]);
+        unset($model["departmentName"]);
+        unset($model["contact"]);
+        unset($model["active"]);
+        unset($model["gender"]);
+        unset($model["both"]);
+        unset($model["salt"]);
+        unset($model["address"]);
+        unset($model["teacherImg"]);
+        unset($model["active"]);
+
+        foreach ($model as $k => $v) {
+            if (!isset($data[$k])) {
+                return json_encode(array('error' => "data 缺少 $k 参数"), JSON_UNESCAPED_UNICODE);
+            }
+        }
+
+        if ($permission == '1') {
+            if ($data["permission"] == '0') {
+                return json_encode(array("error" => "你不能添加权限比你更高的用户"), JSON_UNESCAPED_UNICODE);
+            }
+        }
+
+        $data["teacherId"] = trim(guid(), '{}');
+
+        if (strlen($data['departmentId']) != 2) {
+            return json_encode(array('error' => 'departmentId 参数错误,departmentId 参数需要2个字符 例：01'), JSON_UNESCAPED_UNICODE);
+        } else if ($this->db->selectQuery('departmentId', $this->departmentTable)->andQueryList(array("departmentId" => $data["departmentId"]))->getSelectNum() == 0) {
+            return json_encode(array("error" => "该院系不存在"), JSON_UNESCAPED_UNICODE);
+        } else if (strlen($data["idCard"]) != 18 && strlen($data["idCard"]) != 15) {
+            return json_encode(array('error' => "身份证格式错误"), JSON_UNESCAPED_UNICODE);
+        } else {
+            $data["departmentName"] = $this->db->selectQuery('departmentName', $this->departmentTable)->andQueryList(array("departmentId" => $data["departmentId"]))->getFetchAssoc()[0]["departmentName"];
+        }
+
+
+        $salt = ''; // 随机加密密钥
+        while (strlen($salt) < 6) {
+            $x = mt_rand(0, 9);
+            $salt .= $x;
+        }
+        $data['salt'] = $salt;
+        $data['password'] = sha1($data['password'] . $salt); // sha1哈希加密
+
+
+        $data["active"] = 0;
+
+        if ($this->db->insertQuery($this->teacherTable, $data)->insertExecute()->getAffectedRows() == 1) {
+            return json_encode(array('success' => '教工添加成功'), JSON_UNESCAPED_UNICODE);
+        } else {
+            return json_encode(array('error' => '教工添加失败,请检查参数是否正确'), JSON_UNESCAPED_UNICODE);
+        }
+    }
 
 }

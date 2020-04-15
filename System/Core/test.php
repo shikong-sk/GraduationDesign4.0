@@ -319,8 +319,11 @@ $teacher->login(Array('teacherId'=>'1','password'=>'123+AbC'));
 
 //echo $management->deleteStudent(Array("studentId"=>"1730502101"));
 
-echo $management->getStudentList(Array(),Array("page"=>1));
-echo $management->updateStudent(Array("studentId"=>"1730502127"),Array("studentName"=>"郑晓彬"));
+//echo $management->getStudentList(Array(),Array("page"=>1));
+//echo $management->updateStudent(Array("studentId"=>"1730502127"),Array("studentName"=>"郑晓彬"));
+
+echo $management->addTeacher(Array("teacherName"=>"邱伟发","password"=>"123+AbC","departmentId"=>"05","idCard"=>"440000199910011111","permission"=>"8"));
+
 //echo $student->updateInfo(Array('studentId'=>'1730502127','password'=>'123+AbC'),Array('studentImg'=>$img,'password'=>'123+AbC','salt'=>'123123'));
 
 $student->logout();
