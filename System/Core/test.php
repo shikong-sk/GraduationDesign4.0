@@ -250,6 +250,9 @@ require_once(dirname(__FILE__) .'/Class/TeacherClass.php');
 require_once(dirname(__FILE__) .'/Class/DepartmentClass.php');
 require_once(dirname(__FILE__) .'/Class/MajorClass.php');
 require_once(dirname(__FILE__) .'/Class/GradeClass.php');
+require_once(dirname(__FILE__) .'/Class/ClassClass.php');
+
+require_once(dirname(__FILE__) .'/Class/ManagementClass.php');
 
 $student = new StudentClass();
 $teacher = new TeacherClass();
@@ -257,6 +260,9 @@ $teacher = new TeacherClass();
 $department = new DepartmentClass();
 $major = new MajorClass();
 $grade = new GradeClass();
+$class = new ClassClass();
+
+$management = new ManagementClass();
 
 ob_flush();
 ob_clean();
@@ -270,8 +276,10 @@ header('Content-Type:application/json; charset=utf-8');
 
 //$student->login(Array('studentId'=>'1730502127','password'=>'123+AbC'));
 error_reporting(E_ALL);
+
 $teacher->login(Array('teacherId'=>'1','password'=>'123+AbC'));
 
+//echo $management->getPermission();
 //echo $teacher->updateInfo(Array('teacherId'=>'1','password'=>'123+AbC'),Array('teacherImg'=>$img,'password'=>'123+AbC','salt'=>'123123'));
 
 
@@ -298,7 +306,13 @@ $teacher->login(Array('teacherId'=>'1','password'=>'123+AbC'));
 
 //echo $grade->updateGrade(Array("departmentId"=>"05","majorId"=>"02","grade"=>"17","classNum"=>"2"));
 
-echo $grade->deleteGrade(Array('departmentId'=>"05","majorId"=>"07","grade"=>"17"));
+//echo $grade->deleteGrade(Array('departmentId'=>"05","majorId"=>"07","grade"=>"17"));
+
+echo $class->getClassList(Array("classId"=>"17305"),Array('page'=>"1","num"=>"10"));
+
+echo $class->addClass(Array("grade"=>"17","departmentId"=>"05","majorId"=>"02","years"=>"3","class"=>"2","classId"=>"17305022"));
+
+echo $class->deleteClass(Array("grade"=>"17","departmentId"=>"05","majorId"=>"02","years"=>"3","class"=>"2","classId"=>"17305022"));
 
 //echo $student->updateInfo(Array('studentId'=>'1730502127','password'=>'123+AbC'),Array('studentImg'=>$img,'password'=>'123+AbC','salt'=>'123123'));
 

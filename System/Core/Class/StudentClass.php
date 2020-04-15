@@ -51,56 +51,6 @@ class StudentClass{
         $this->studentTable = $this->db->db_table_prefix."_".SqlHelper::STUDENT;
     }
 
-    public function test($data,$filter=""){
-        if (!is_array($data)) {
-            if(!is_string($data)){
-                die(json_encode(Array("error"=>"JSON data 解析失败"),JSON_UNESCAPED_UNICODE));
-            }
-
-            if(strlen($data) == 0)
-            {
-                die(json_encode(Array("error"=>"JSON data 解析失败"),JSON_UNESCAPED_UNICODE));
-            }
-
-            $data = json_decode($data, true);
-            if(!$data){
-                die(json_encode(Array("error"=>"JSON data 解析失败"),JSON_UNESCAPED_UNICODE));
-            }
-        }
-
-        if (!is_array($filter)) {
-            if(!is_string($filter)){
-                die(json_encode(Array("error"=>"JSON filter 解析失败"),JSON_UNESCAPED_UNICODE));
-            }
-
-            if(strlen($filter) != 0)
-            {
-                $filter = json_decode($filter, true);
-                if(!$filter){
-                    die(json_encode(Array("error"=>"JSON filter 解析失败"),JSON_UNESCAPED_UNICODE));
-                }
-            }
-        }
-
-        foreach ($data as $k=>$v)
-        {
-            if(!array_key_exists($k,$this->model))
-            {
-                unset($data[$k]);
-            }
-        }
-
-        if(is_array($filter))
-        {
-            foreach ($filter as $k=>$v)
-            {
-                if(!array_key_exists($k,$this->filter))
-                {
-                    unset($filter[$k]);
-                }
-            }
-        }
-    }
 
     public function register($data){
         if(isset($_SESSION['ms_id']) || isset($_SESSION['ms_user']))
