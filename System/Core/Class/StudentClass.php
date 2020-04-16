@@ -201,7 +201,7 @@ class StudentClass{
             }
         }
         else{
-            return json_encode(Array('error'=>'参数错误'),JSON_UNESCAPED_UNICODE);
+            return json_encode(Array('error'=>'参数错误,缺少 studentId 或 password 参数'),JSON_UNESCAPED_UNICODE);
         }
     }
 

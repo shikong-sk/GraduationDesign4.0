@@ -37,7 +37,7 @@ class FileClass
         }
 
         if (preg_match('/^(data:\s*image\/(\w+);base64,)/', $imgData, $result)) {
-            $type = $result[2];
+            $type = ".".$result[2];
             $img = str_replace($result[1], '', $imgData);
         }
         else{

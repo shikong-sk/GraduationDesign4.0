@@ -117,11 +117,11 @@ foreach ($_POST as $key => $value)
         foreach ($value as $k => $v){
             foreach ($blacklist as $blackItem){
                 if (boolval(preg_match('/\b' . $blackItem . '\b/im', $v))) {
-                    if((strstr($k,'time') || strstr($k,'Time')) || strstr($k,'Img') || strstr($k,'img'))
+                    if(strstr($k,'Img') || strstr($k,'img'))
                     {
                         continue;
                     }
-                    die(json_encode(Array('error'=>'非法参数'.$v)));
+                    die(json_encode(Array('error'=>'非法参数'.$v),JSON_UNESCAPED_UNICODE));
                 }
             }
         }
@@ -129,11 +129,11 @@ foreach ($_POST as $key => $value)
     else{
         foreach ($blacklist as $blackItem){
             if (boolval(preg_match('/\b' . $blackItem . '\b/im', $value))) {
-                if(($key == 'time' || strstr($key,'Time')) || strstr($key,'Img'))
+                if(strstr($key,'img') || strstr($key,'Img'))
                 {
                     continue;
                 }
-                die(json_encode(Array('error'=>'非法参数'.$value)));
+                die(json_encode(Array('error'=>'非法参数'.$value),JSON_UNESCAPED_UNICODE));
             }
         }
     }
