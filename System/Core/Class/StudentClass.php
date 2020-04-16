@@ -8,6 +8,7 @@ class StudentClass{
 
     var $db;
     var $studentTable;
+    var $scoreTable;
 
     var $model = Array(
         'studentId' => null,
@@ -49,6 +50,7 @@ class StudentClass{
             $this->studentName = $_SESSION['ms_user'];
         }
         $this->studentTable = $this->db->db_table_prefix."_".SqlHelper::STUDENT;
+        $this->scoreTable = $this->db->db_table_prefix."_".SqlHelper::SCORE;
     }
 
 
@@ -176,7 +178,12 @@ class StudentClass{
 
         if(isset($data['studentId']) && isset($data['password']))
         {
-            $salt = $this->db->selectQuery('salt',$this->studentTable)->selectLimit(1,1)->getFetchAssoc()[0]['salt'];
+            if($this->db->selectQuery('salt',$this->studentTable)->andQueryList(Array('studentId'=>$data["studentId"]))->selectLimit(1,1)->getSelectNum() == 0)
+            {
+                return json_encode(Array('error'=>'账号不存在/未激活 或 密码 错误'),JSON_UNESCAPED_UNICODE);
+            }
+
+            $salt = $this->db->selectQuery('salt',$this->studentTable)->andQueryList(Array('studentId'=>$data["studentId"]))->selectLimit(1,1)->getFetchAssoc()[0]['salt'];
 
             $data['password'] = sha1($data['password'].$salt);
 
@@ -327,6 +334,10 @@ class StudentClass{
 ////                            return json_encode(Array('warning'=>'信息修改成功,但'.json_decode($res,true)['warning']),JSON_UNESCAPED_UNICODE);
 //                        }
                     }
+                }
+                if(isset($info['studentName']))
+                {
+                    $this->db->updateQuery($this->scoreTable,Array("studentName"=>$info["studentName"]))->andQuery("studentId",$data["studentId"])->updateExecute();
                 }
                 return json_encode(Array('success'=>'信息修改成功'),JSON_UNESCAPED_UNICODE);
             }

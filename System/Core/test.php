@@ -254,6 +254,8 @@ require_once(dirname(__FILE__) .'/Class/ClassClass.php');
 
 require_once(dirname(__FILE__) .'/Class/ManagementClass.php');
 
+require_once(dirname(__FILE__) .'/Class/CourseClass.php');
+
 $student = new StudentClass();
 $teacher = new TeacherClass();
 
@@ -263,6 +265,8 @@ $grade = new GradeClass();
 $class = new ClassClass();
 
 $management = new ManagementClass();
+
+$course = new CourseClass();
 
 ob_flush();
 ob_clean();
@@ -277,10 +281,10 @@ header('Content-Type:application/json; charset=utf-8');
 //$student->login(Array('studentId'=>'1730502127','password'=>'123+AbC'));
 error_reporting(E_ALL);
 
-$teacher->login(Array('teacherId'=>'1','password'=>'123+AbC'));
+$teacher->login(Array('email'=>'919411476@qq.com','password'=>'123+AbC'));
 
 //echo $management->getPermission();
-//echo $teacher->updateInfo(Array('teacherId'=>'1','password'=>'123+AbC'),Array('teacherImg'=>$img,'password'=>'123+AbC','salt'=>'123123'));
+//echo $teacher->updateInfo(Array('teacherId'=>'1','password'=>'123+AbC'),Array('teacherImg'=>$img,'password'=>'123+AbC','salt'=>'123123',"teacherName"=>"时空"));
 
 
 //echo $student->getUserInfo();
@@ -322,9 +326,17 @@ $teacher->login(Array('teacherId'=>'1','password'=>'123+AbC'));
 //echo $management->getStudentList(Array(),Array("page"=>1));
 //echo $management->updateStudent(Array("studentId"=>"1730502127"),Array("studentName"=>"郑晓彬"));
 
-echo $management->addTeacher(Array("teacherName"=>"邱伟发","password"=>"123+AbC","departmentId"=>"05","idCard"=>"440000199910011111","permission"=>"8"));
+//echo $management->addTeacher(Array("teacherName"=>"邱伟发","password"=>"123+AbC","departmentId"=>"05","idCard"=>"440000199910011111","permission"=>"8","email"=>"qwx@skcks.cn"));
+//echo $management->getTeacherList(Array("teacherName"=>"时"),Array("page"=>"1"));
+//echo $management->updateTeacher(Array("teacherId"=>'1'),Array("departmentId"=>"05","permission"=>"0"));
+
+//echo $management->deleteTeacher(Array("teacherId"=>"54063843-F21F-D737-24C8-F849B7892523"));
 
 //echo $student->updateInfo(Array('studentId'=>'1730502127','password'=>'123+AbC'),Array('studentImg'=>$img,'password'=>'123+AbC','salt'=>'123123'));
+
+//echo $course->getCourseList(Array(),Array("page"=>"1"));
+echo $course->addCourse(Array("teacherId"=>"1","classId"=>"17305021","courseName"=>"测试","startTime"=>"2020-03-16","endTime"=>"2020-03-16","public"=>"0"));
+
 
 $student->logout();
 //$file = new FileClass();

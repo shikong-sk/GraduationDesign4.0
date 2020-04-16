@@ -9,6 +9,9 @@ class TeacherClass{
     var $db;
     var $teacherTable;
 
+    var $scoreTable;
+    var $courseTable;
+
     var $model = Array(
         'teacherId' => null,
         'teacherName' => null,
@@ -22,6 +25,7 @@ class TeacherClass{
         'idCard' => null,
         'address' => null,
         'teacherImg' => null,
+        "email"=>null,
     );
 
     var $filter = Array(
@@ -41,6 +45,8 @@ class TeacherClass{
             $this->teacherName = $_SESSION['ms_user'];
         }
         $this->teacherTable = $this->db->db_table_prefix."_".SqlHelper::TEACHER;
+        $this->scoreTable = $this->db->db_table_prefix."_".SqlHelper::SCORE;
+        $this->courseTable = $this->db->db_table_prefix."_".SqlHelper::COURSE;
     }
     
     public function login($data){
@@ -66,7 +72,8 @@ class TeacherClass{
         }
 
         $model = Array(
-            'teacherId' => null,
+            'email'=>null,
+//            'teacherId' => null,
             'password' => null
         );
 
@@ -78,9 +85,14 @@ class TeacherClass{
             }
         }
 
-        if(isset($data['teacherId']) && isset($data['password']))
+        if(isset($data['email']) && isset($data['password']))
         {
-            $salt = $this->db->selectQuery('salt',$this->teacherTable)->selectLimit(1,1)->getFetchAssoc()[0]['salt'];
+            if($this->db->selectQuery('salt',$this->teacherTable)->andQueryList(Array('email'=>$data["email"]))->selectLimit(1,1)->getSelectNum() == 0)
+            {
+                return json_encode(Array('error'=>'账号不存在/未激活 或 密码 错误'),JSON_UNESCAPED_UNICODE);
+            }
+
+            $salt = $this->db->selectQuery('salt',$this->teacherTable)->andQueryList(Array('email'=>$data["email"]))->selectLimit(1,1)->getFetchAssoc()[0]['salt'];
 
             $data['password'] = sha1($data['password'].$salt);
 
@@ -175,6 +187,7 @@ class TeacherClass{
             unset($info['departmentName']);
             unset($info['permission']);
             unset($info['active']);
+            unset($info['email']);
 
 
             $query = $this->db->selectQuery('teacherImg',$this->teacherTable)->andQueryList($data)->selectLimit(1,1);
@@ -225,6 +238,11 @@ class TeacherClass{
 //                            return json_encode(Array('warning'=>'信息修改成功,但'.json_decode($res,true)['warning']),JSON_UNESCAPED_UNICODE);
 //                        }
                     }
+                }
+                if(isset($info["teacherName"]))
+                {
+                    $this->db->updateQuery($this->scoreTable,Array("teacherName"=>$info["teacherName"]))->andQuery("teacherId",$data["teacherId"])->updateExecute();
+                    $this->db->updateQuery($this->courseTable,Array("teacherName"=>$info["teacherName"]))->andQuery("teacherId",$data["teacherId"])->updateExecute();
                 }
                 return json_encode(Array('success'=>'信息修改成功'),JSON_UNESCAPED_UNICODE);
             }
