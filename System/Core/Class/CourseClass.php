@@ -136,7 +136,7 @@ class CourseClass
         } else if ($_SESSION['ms_identity'] != 'Teacher') {
             return json_encode(array('error' => '您没有此权限'), JSON_UNESCAPED_UNICODE);
         } else if ($this->db->selectQuery('permission', $this->teacherTable)->andQueryList(array('teacherId' => $_SESSION['ms_id']))
-                ->andLeftTripQuery_Or()->orQueryList(Array('permission' => '0'))->orQueryList(Array('permission' => '1'))->andRightTripQuery_Or()
+                ->andLeftTripQuery_Or()->orQueryList(array('permission' => '0'))->orQueryList(array('permission' => '1'))->andRightTripQuery_Or()
                 ->getSelectNum() == 0) {
             return json_encode(array('error' => '您没有此权限'), JSON_UNESCAPED_UNICODE);
         }
@@ -173,8 +173,7 @@ class CourseClass
             } else {
                 switch ($k) {
                     case "courseName":
-                        if(strlen($data[$k]) == 0)
-                        {
+                        if (strlen($data[$k]) == 0) {
                             return json_encode(array('error' => 'data courseName 参数错误'), JSON_UNESCAPED_UNICODE);
                         }
                         break;
@@ -184,52 +183,47 @@ class CourseClass
                         }
                         break;
                     case "classId":
-                        if(strlen($data[$k]) != 8)
-                        {
-                            return json_encode(Array('error' => 'data classId 参数错误,classId 参数需要8个字符 例：17305021'),JSON_UNESCAPED_UNICODE);
-                        }
-                        else if($this->db->selectQuery("*",$this->classTable)->andQueryList(Array("classId"=>$data[$k]))->getSelectNum() == 0){
-                            return json_encode(Array('error' => "该班级不存在"),JSON_UNESCAPED_UNICODE);
+                        if (strlen($data[$k]) != 8) {
+                            return json_encode(array('error' => 'data classId 参数错误,classId 参数需要8个字符 例：17305021'), JSON_UNESCAPED_UNICODE);
+                        } else if ($this->db->selectQuery("*", $this->classTable)->andQueryList(array("classId" => $data[$k]))->getSelectNum() == 0) {
+                            return json_encode(array('error' => "该班级不存在"), JSON_UNESCAPED_UNICODE);
                         }
                         break;
                     case "teacherId":
-                        if(strlen($data[$k]) == 0)
-                        {
-                            return json_encode(Array('error' => 'data teacherId 参数错误'),JSON_UNESCAPED_UNICODE);
-                        }
-                        else if($this->db->selectQuery('*',$this->teacherTable)->andQueryList(Array('teacherId'=>$data[$k]))->getSelectNum() == 0){
-                            return json_encode(Array('error' => "该教工不存在"),JSON_UNESCAPED_UNICODE);
-                        }
-                        else{
+                        if (strlen($data[$k]) == 0) {
+                            return json_encode(array('error' => 'data teacherId 参数错误'), JSON_UNESCAPED_UNICODE);
+                        } else if ($this->db->selectQuery('*', $this->teacherTable)->andQueryList(array('teacherId' => $data[$k]))->getSelectNum() == 0) {
+                            return json_encode(array('error' => "该教工不存在"), JSON_UNESCAPED_UNICODE);
+                        } else {
                             $data["teacherName"] =
-                                $this->db->selectQuery("teacherName",$this->teacherTable)->andQueryList(Array('teacherId'=>$data[$k]))->selectLimit(1,1)->getFetchAssoc()[0]['teacherName'];
+                                $this->db->selectQuery("teacherName", $this->teacherTable)->andQueryList(array('teacherId' => $data[$k]))->selectLimit(1, 1)->getFetchAssoc()[0]['teacherName'];
                         }
                         break;
                     case "startTime":
-                        if(strlen($data[$k]) != 10)
-                        {
-                            return json_encode(Array('error' => 'data startTime 参数错误,startTime 参数需要10个字符 例：2020-01-01'),JSON_UNESCAPED_UNICODE);
-                        }
-                        else if(!preg_match("/^\d{4}-\d{2}-\d{2}/",$data[$k])){
-                            return json_encode(Array('error' => 'data startTime 参数错误,startTime 参数需要10个字符 例：2020-01-01'),JSON_UNESCAPED_UNICODE);
+                        if (strlen($data[$k]) != 10) {
+                            return json_encode(array('error' => 'data startTime 参数错误,startTime 参数需要10个字符 例：2020-01-01'), JSON_UNESCAPED_UNICODE);
+                        } else if (!preg_match("/^\d{4}-\d{2}-\d{2}/", $data[$k])) {
+                            return json_encode(array('error' => 'data startTime 参数错误,startTime 参数需要10个字符 例：2020-01-01'), JSON_UNESCAPED_UNICODE);
                         }
                         break;
                     case "endTime":
-                        if(strlen($data[$k]) != 10)
-                        {
-                            return json_encode(Array('error' => 'data endTime 参数错误,endTime 参数需要10个字符 例：2020-01-01'),JSON_UNESCAPED_UNICODE);
-                        }
-                        else if(!preg_match("/^\d{4}-\d{2}-\d{2}/",$data[$k])){
-                            return json_encode(Array('error' => 'data endTime 参数错误,endTime 参数需要10个字符 例：2020-01-01'),JSON_UNESCAPED_UNICODE);
+                        if (strlen($data[$k]) != 10) {
+                            return json_encode(array('error' => 'data endTime 参数错误,endTime 参数需要10个字符 例：2020-01-01'), JSON_UNESCAPED_UNICODE);
+                        } else if (!preg_match("/^\d{4}-\d{2}-\d{2}/", $data[$k])) {
+                            return json_encode(array('error' => 'data endTime 参数错误,endTime 参数需要10个字符 例：2020-01-01'), JSON_UNESCAPED_UNICODE);
                         }
                         break;
                 }
             }
         }
 
-        if(strtotime($data["endTime"]) < strtotime($data["startTime"]))
+        if (strtotime($data["endTime"]) < strtotime($data["startTime"])) {
+            return json_encode(array('error' => '结束时间不能早于开始时间'), JSON_UNESCAPED_UNICODE);
+        }
+
+        if($this->db->selectQuery("*",$this->courseTable)->andQueryList(array("classId"=>$data["classId"],"courseName"=>$data["courseName"],"teacherId"=>$data["teacherId"]))->getSelectNum() != 0)
         {
-            return json_encode(Array('error' => '结束时间不能早于开始时间'),JSON_UNESCAPED_UNICODE);
+            return json_encode(array('error' => '该班级已开设此课程'), JSON_UNESCAPED_UNICODE);
         }
 
         $data["courseId"] = trim(guid(), '{}');
@@ -249,7 +243,7 @@ class CourseClass
         } else if ($_SESSION['ms_identity'] != 'Teacher') {
             return json_encode(array('error' => '您没有此权限'), JSON_UNESCAPED_UNICODE);
         } else if ($this->db->selectQuery('permission', $this->teacherTable)->andQueryList(array('teacherId' => $_SESSION['ms_id']))
-                ->andLeftTripQuery_Or()->orQueryList(Array('permission' => '0'))->orQueryList(Array('permission' => '1'))->andRightTripQuery_Or()
+                ->andLeftTripQuery_Or()->orQueryList(array('permission' => '0'))->orQueryList(array('permission' => '1'))->andRightTripQuery_Or()
                 ->getSelectNum() == 0) {
             return json_encode(array('error' => '您没有此权限'), JSON_UNESCAPED_UNICODE);
         }
@@ -275,76 +269,128 @@ class CourseClass
             }
         }
 
-        if (!isset($data['departmentId'])) {
-            return json_encode(array('error' => 'departmentId 为必填参数'), JSON_UNESCAPED_UNICODE);
-        } else if (!isset($data['majorId'])) {
-            return json_encode(array('error' => 'majorId 为必填参数'), JSON_UNESCAPED_UNICODE);
+        unset($data["teacherName"]);
+
+        if (!isset($data['courseId'])) {
+            return json_encode(array('error' => 'courseId 为必填参数'), JSON_UNESCAPED_UNICODE);
         }
 
-        $model = $this->model;
-
-        unset($model['departmentName']);
+        $model = array(
+            "courseId" => null,
+            "classId"=>null
+        );
 
         foreach ($model as $k => $v) {
             if (!isset($data[$k])) {
                 return json_encode(array('error' => "data 缺少 $k 参数"), JSON_UNESCAPED_UNICODE);
             } else {
                 switch ($k) {
-                    case 'active':
-                        if ($data[$k] != '0' && $data[$k] != '1') {
-                            return json_encode(array('error' => 'active 参数错误'), JSON_UNESCAPED_UNICODE);
-                        }
-                        break;
-                    case 'departmentId':
-                        if (strlen($data[$k]) != 2) {
-                            return json_encode(array('error' => 'departmentId 参数错误,departmentId 参数需要2个字符 例：01'), JSON_UNESCAPED_UNICODE);
-                        } else if ($this->db->selectQuery('*', $this->departmentTable)->andQuery('departmentId', $data[$k])->getSelectNum() == 0) {
-                            return json_encode(array('error' => '该院系不存在'), JSON_UNESCAPED_UNICODE);
-                        }
-                        break;
-                    case 'majorId':
-                        if (strlen($data[$k]) != 2) {
-                            return json_encode(array('error' => 'majorId 参数错误,majorId 参数需要2个字符 例：01'), JSON_UNESCAPED_UNICODE);
-                        } else if ($this->db->selectQuery('*', $this->majorTable)->andQueryList(array('departmentId' => $data['departmentId'], 'majorId' => $data[$k]))->getSelectNum() == 0) {
-                            return json_encode(array('error' => '该专业不存在'), JSON_UNESCAPED_UNICODE);
-                        }
-                        break;
-                    case 'majorName':
+                    case 'courseId':
                         if (strlen($data[$k]) == 0) {
-                            return json_encode(array('error' => '专业名称不能为空'), JSON_UNESCAPED_UNICODE);
+                            return json_encode(array('error' => '课程编号不能为空'), JSON_UNESCAPED_UNICODE);
+                        }
+                        break;
+                    case 'classId':
+                        if (strlen($data[$k]) == 0) {
+                            return json_encode(array('error' => '班级编号不能为空'), JSON_UNESCAPED_UNICODE);
                         }
                         break;
                 }
             }
         }
 
-        $departmentId = $data['departmentId'];
-        unset($data["departmentId"]);
-        $majorId = $data['majorId'];
-        unset($data["majorId"]);
+        if ($this->db->selectQuery('*',$this->courseTable)->andQueryList(array("courseId"=>$data["courseId"],"classId"=>$data["classId"]))->getSelectNum() == 0)
+        {
+            return json_encode(array('error' => '该课程不存在'), JSON_UNESCAPED_UNICODE);
+        }
 
-        if ($this->db->updateQuery($this->majorTable, $data)->andQueryList(array('departmentId' => $departmentId, 'majorId' => $majorId))->updateLimit(1)->updateExecute()->getAffectedRows() == 1) {
-            $data = $this->db->selectQuery('majorId,MajorName', $this->majorTable)->andQueryList(array('departmentId' => $departmentId, 'majorId' => $majorId))->getFetchAssoc()[0];
+        foreach ($data as $k => $v)
+        {
+            switch ($k)
+            {
+                case "courseName":
+                    if(strlen($v) == 0)
+                    {
+                        return json_encode(array('error' => '课程名称不能为空'), JSON_UNESCAPED_UNICODE);
+                    }
+                    else if($this->db->selectQuery("*",$this->courseTable)->andQueryList(array("classId"=>$data["classId"],"courseName"=>$data["courseName"]))->getSelectNum() != 0)
+                    {
+                        return json_encode(array('error' => '该班级已开设此课程'), JSON_UNESCAPED_UNICODE);
+                    }
+                    break;
+                case "teacherId":
+                    if (strlen($data[$k]) == 0) {
+                        return json_encode(array('error' => 'data teacherId 参数错误'), JSON_UNESCAPED_UNICODE);
+                    } else if ($this->db->selectQuery('*', $this->teacherTable)->andQueryList(array('teacherId' => $data[$k]))->getSelectNum() == 0) {
+                        return json_encode(array('error' => "该教工不存在"), JSON_UNESCAPED_UNICODE);
+                    } else {
+                        $data["teacherName"] =
+                            $this->db->selectQuery("teacherName", $this->teacherTable)->andQueryList(array('teacherId' => $data[$k]))->selectLimit(1, 1)->getFetchAssoc()[0]['teacherName'];
+                    }
+                    break;
+                case "startTime":
+                    if (strlen($data[$k]) != 10) {
+                        return json_encode(array('error' => 'data startTime 参数错误,startTime 参数需要10个字符 例：2020-01-01'), JSON_UNESCAPED_UNICODE);
+                    } else if (!preg_match("/^\d{4}-\d{2}-\d{2}/", $data[$k])) {
+                        return json_encode(array('error' => 'data startTime 参数错误,startTime 参数需要10个字符 例：2020-01-01'), JSON_UNESCAPED_UNICODE);
+                    }
+                    break;
+                case "endTime":
+                    if (strlen($data[$k]) != 10) {
+                        return json_encode(array('error' => 'data endTime 参数错误,endTime 参数需要10个字符 例：2020-01-01'), JSON_UNESCAPED_UNICODE);
+                    } else if (!preg_match("/^\d{4}-\d{2}-\d{2}/", $data[$k])) {
+                        return json_encode(array('error' => 'data endTime 参数错误,endTime 参数需要10个字符 例：2020-01-01'), JSON_UNESCAPED_UNICODE);
+                    }
+                    break;
+            }
+        }
 
-            $this->db->updateQuery($this->gradeTable, $data)->andQueryList(array('departmentId' => $departmentId, 'majorId' => $majorId))->updateExecute();
-            $this->db->updateQuery($this->classTable, $data)->andQueryList(array('departmentId' => $departmentId, 'majorId' => $majorId))->updateExecute();
-            $this->db->updateQuery($this->studentTable, $data)->andQueryList(array('departmentId' => $departmentId, 'majorId' => $majorId))->updateExecute();
-            $this->db->updateQuery($this->teacherTable, $data)->andQueryList(array('departmentId' => $departmentId, 'majorId' => $majorId))->updateExecute();
 
-            return json_encode(array('success' => '专业信息更新成功'), JSON_UNESCAPED_UNICODE);
+        $courseId = $data["courseId"];
+        unset($data["courseId"]);
+        $classId = $data["classId"];
+        unset($data["classId"]);
+
+        if(isset($data["startTime"]) && !isset($data["endTime"]))
+        {
+            $data["endTime"] = $this->db->selectQuery("endTime",$this->courseTable)->andQueryList(array("courseId"=>$courseId,"classId"=>$classId))->selectLimit(1,1)->getFetchAssoc()[0]["endTime"];
+        }
+        else if(!isset($data["startTime"]) && isset($data["endTime"]))
+        {
+            $data["startTime"] = $this->db->selectQuery("startTime",$this->courseTable)->andQueryList(array("courseId"=>$courseId,"classId"=>$classId))->selectLimit(1,1)->getFetchAssoc()[0]["startTime"];
+        }
+        else if(isset($data["startTime"]) && isset($data["endTime"])){
+            if (strtotime($data["endTime"]) < strtotime($data["startTime"])) {
+                return json_encode(array('error' => '结束时间不能早于开始时间'), JSON_UNESCAPED_UNICODE);
+            }
+        }
+
+
+        if ($this->db->updateQuery($this->courseTable, $data)->andQueryList(array("courseId"=>$courseId,"classId"=>$classId))->updateLimit(1)->updateExecute()->getAffectedRows() == 1) {
+            if(isset($data["courseName"]))
+            {
+                $this->db->updateQuery($this->scoreTable,array("courseName"=>$data["courseName"]))->andQueryList(array("courseId"=>$courseId))->updateExecute();
+            }
+            if(isset($data["teacherName"]))
+            {
+                $this->db->updateQuery($this->scoreTable,array("teacherId"=>$data["teacherId"],"teacherName"=>$data["teacherName"]))->andQueryList(array("courseId"=>$courseId))->updateExecute();
+            }
+            return json_encode(array('success' => '课程信息更新成功'), JSON_UNESCAPED_UNICODE);
         } else {
-            return json_encode(array('info' => '专业信息未更改'), JSON_UNESCAPED_UNICODE);
+            return json_encode(array('info' => '课程信息未更改'), JSON_UNESCAPED_UNICODE);
         }
 
     }
 
-    public function deleteMajor($data)
+    public function deleteCourse($data)
     {
         if (!isset($_SESSION['ms_id']) || !isset($_SESSION['ms_user'])) {
             return json_encode(array('error' => '请登录后再进行此操作'), JSON_UNESCAPED_UNICODE);
         } else if ($_SESSION['ms_identity'] != 'Teacher') {
             return json_encode(array('error' => '您没有此权限'), JSON_UNESCAPED_UNICODE);
-        } else if ($this->db->selectQuery('permission', $this->teacherTable)->andQueryList(array('teacherId' => $_SESSION['ms_id'], 'permission' => '0'))->getSelectNum() == 0) {
+        } else if ($this->db->selectQuery('permission', $this->teacherTable)->andQueryList(array('teacherId' => $_SESSION['ms_id']))
+                ->andLeftTripQuery_Or()->orQueryList(array('permission' => '0'))->orQueryList(array('permission' => '1'))->andRightTripQuery_Or()
+                ->getSelectNum() == 0) {
             return json_encode(array('error' => '您没有此权限'), JSON_UNESCAPED_UNICODE);
         }
 
@@ -368,26 +414,22 @@ class CourseClass
                 unset($data[$k]);
             }
         }
-        if (!isset($data['departmentId'])) {
-            return json_encode(array('error' => 'departmentId 为必填参数'), JSON_UNESCAPED_UNICODE);
-        } else if (strlen($data['departmentId']) != 2) {
-            return json_encode(array('error' => 'departmentId 参数错误,departmentId 参数需要2个字符 例：01'));
-        } else if (!isset($data['majorId'])) {
-            return json_encode(array('error' => 'majorId 为必填参数'), JSON_UNESCAPED_UNICODE);
-        } else if (strlen($data['majorId']) != 2) {
-            return json_encode(array('error' => 'majorId 参数错误,majorId 参数需要2个字符 例：01'));
+        if (!isset($data['courseId'])) {
+            return json_encode(array('error' => 'courseId 为必填参数'), JSON_UNESCAPED_UNICODE);
+        } else if (!isset($data['classId'])) {
+            return json_encode(array('error' => 'classId 为必填参数'), JSON_UNESCAPED_UNICODE);
+        } else if (!isset($data['teacherId'])) {
+            return json_encode(array('error' => 'teacherId 为必填参数'), JSON_UNESCAPED_UNICODE);
         } else {
-            if ($this->db->selectQuery('*', $this->studentTable)->andQueryList(array('departmentId' => $data['departmentId'], 'majorId' => $data["majorId"]))->getSelectNum() != 0) {
-                return json_encode(array('error' => '该专业已有学生，请先修改/删除其相应的学生信息后再进行此操作'), JSON_UNESCAPED_UNICODE);
-            } else if ($this->db->selectQuery('*', $this->classTable)->andQueryList(array('departmentId' => $data['departmentId'], 'majorId' => $data["majorId"]))->getSelectNum() != 0) {
-                return json_encode(array('error' => '该专业已有班级，请先删除其对应的信息后再进行此操作'), JSON_UNESCAPED_UNICODE);
-            } else if ($this->db->selectQuery('*', $this->gradeTable)->andQueryList(array('departmentId' => $data['departmentId'], 'majorId' => $data["majorId"]))->getSelectNum() != 0) {
-                return json_encode(array('error' => '该专业已有年级，请先删除其对应的信息后再进行此操作'), JSON_UNESCAPED_UNICODE);
+            if ($this->db->selectQuery('*', $this->courseTable)->andQueryList(array('courseId' => $data['courseId'], 'classId' => $data["classId"],"teacherId"=>$data["teacherId"]))->getSelectNum() == 0) {
+                return json_encode(array('error' => '此课程不存在'), JSON_UNESCAPED_UNICODE);
+            } else if ($this->db->selectQuery('*', $this->scoreTable)->andQueryList(array('courseId' => $data['courseId'], 'teacherId' => $data["teacherId"]))->getSelectNum() != 0) {
+                return json_encode(array('error' => '该课程已登记成绩，请先删除其对应的信息后再进行此操作'), JSON_UNESCAPED_UNICODE);
             } else {
-                if ($this->db->deleteQuery($this->majorTable)->andQueryList(array('departmentId' => $data['departmentId'], 'majorId' => $data["majorId"]))->deleteExecute()->getAffectedRows() == 1) {
-                    return json_encode(array('success' => '专业删除成功'), JSON_UNESCAPED_UNICODE);
+                if ($this->db->deleteQuery($this->courseTable)->andQueryList(array('courseId' => $data['courseId'], 'teacherId' => $data["teacherId"]))->deleteExecute()->getAffectedRows() == 1) {
+                    return json_encode(array('success' => '课程删除成功'), JSON_UNESCAPED_UNICODE);
                 } else {
-                    return json_encode(array('error' => '专业删除失败'), JSON_UNESCAPED_UNICODE);
+                    return json_encode(array('error' => '课程删除失败'), JSON_UNESCAPED_UNICODE);
                 }
             }
         }

@@ -901,8 +901,21 @@ class ManagementClass
             }
         }
 
+        if($data["teacherId"] == $_SESSION["ms_id"])
+        {
+            return json_encode(array('error' => "您不能删除自己的账号"), JSON_UNESCAPED_UNICODE);
+        }
+
         if ($this->db->selectQuery("*", $this->teacherTable)->andQueryList(array("teacherId" => $data["teacherId"]))->getSelectNum() == 0) {
             return json_encode(array('error' => "该教工不存在"), JSON_UNESCAPED_UNICODE);
+        }
+        else if($permission == '1')
+        {
+            $p = $this->db->selectQuery("permission", $this->teacherTable)->andQueryList(array("teacherId" => $data["teacherId"]))->getFetchAssoc()[0]["permission"];
+            if($p == '0' || $p == $permission)
+            {
+                return json_encode(array('error' => "您无权删除权限比你更高或相同的账号"), JSON_UNESCAPED_UNICODE);
+            }
         }
 
         if ($this->db->deleteQuery($this->teacherTable)->andQueryList(array("teacherId" => $data["teacherId"]))->deleteLimit(1)->deleteExecute()->getAffectedRows() == 1) {

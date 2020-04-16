@@ -255,6 +255,7 @@ require_once(dirname(__FILE__) .'/Class/ClassClass.php');
 require_once(dirname(__FILE__) .'/Class/ManagementClass.php');
 
 require_once(dirname(__FILE__) .'/Class/CourseClass.php');
+require_once(dirname(__FILE__) .'/Class/ScoreClass.php');
 
 $student = new StudentClass();
 $teacher = new TeacherClass();
@@ -267,6 +268,7 @@ $class = new ClassClass();
 $management = new ManagementClass();
 
 $course = new CourseClass();
+$score = new ScoreClass();
 
 ob_flush();
 ob_clean();
@@ -335,8 +337,15 @@ $teacher->login(Array('email'=>'919411476@qq.com','password'=>'123+AbC'));
 //echo $student->updateInfo(Array('studentId'=>'1730502127','password'=>'123+AbC'),Array('studentImg'=>$img,'password'=>'123+AbC','salt'=>'123123'));
 
 //echo $course->getCourseList(Array(),Array("page"=>"1"));
-echo $course->addCourse(Array("teacherId"=>"1","classId"=>"17305021","courseName"=>"测试","startTime"=>"2020-03-16","endTime"=>"2020-03-16","public"=>"0"));
+//echo $course->addCourse(Array("teacherId"=>"1","classId"=>"17305021","courseName"=>"测试","startTime"=>"2020-03-16","endTime"=>"2020-03-16","public"=>"0"));
 
+//echo $course->updateCourse(array("courseId"=>"10086","classId"=>"17305021","teacherId"=>"1"));
+//echo $course->deleteCourse(Array("courseId"=>"0CDE495F-4D3F-B630-E55A-5D479B36EC22","classId"=>"17305021","teacherId"=>"1"));
+
+//echo $score->getScoreList(Array("courseName"=>"安全"),Array("page"=>"1"));
+//echo $score->addScore(Array("courseId"=>"10086","teacherId"=>"1","studentId"=>"1730502127","score"=>"100","flag"=>"0"));
+//echo $score->updateScore(Array("courseId"=>"10086","teacherId"=>"1","studentId"=>"1730502127","score"=>"120","flag"=>"0"));
+echo $score->deleteCourse(Array("courseId"=>"10086","teacherId"=>"1","studentId"=>"1730502127","flag"=>"2"));
 
 $student->logout();
 //$file = new FileClass();
