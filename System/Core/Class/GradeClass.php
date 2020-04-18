@@ -29,6 +29,7 @@ class GradeClass
     var $filter = Array(
         'page' => null,
         'num' => null,
+        'arg' =>null
     );
 
     public function __construct()
@@ -107,6 +108,15 @@ class GradeClass
         }
 
         $query = $this->db->selectQuery('*', $this->gradeTable);
+
+        if(isset($filter["arg"]))
+        {
+            switch ($filter["arg"]){
+                case 'distance':
+                    $query = $this->db->selectDistinctQuery('grade',$this->gradeTable);
+                    break;
+            }
+        }
 
         if (isset($data['departmentName'])) {
             $departmentName_Like = $data['departmentName'];
