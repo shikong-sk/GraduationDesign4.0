@@ -112,7 +112,7 @@ class GradeClass
         if(isset($filter["arg"]))
         {
             switch ($filter["arg"]){
-                case 'distance':
+                case 'distinct':
                     $query = $this->db->selectDistinctQuery('grade',$this->gradeTable);
                     break;
             }
