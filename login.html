@@ -79,7 +79,7 @@
 </head>
 
 <body>
-    <div id="login" v-cloak>
+    <div id="header">
         <el-row>
             <el-col :sm="4" class="text-center">
                 <img style="max-width: 120px;max-height: 50px;text-align: center;" src="Storage/global/Logo.png" alt="logo" class="img-fluid">
@@ -91,159 +91,192 @@
             </el-col>
             <el-col :md="2" :xs="24">
                 <div style="text-align: center;position: relative;z-index: 999999;" class="mx-auto">
-                    <el-menu style="position: absolute;z-index: 99999;width: 100%;">
-                        <el-submenu index="100">
-                            <template slot="title">
-                                <div style="overflow-x: hidden;text-overflow: ellipsis;">
-                                    <span>123123213321321323</span>
-                                </div>
-                            </template>
-                            <el-menu-item index="100-1" style="min-width:100%;padding: 0;position: relative;z-index: 99999;">个人中心</el-menu-item>
-                            <el-menu-item index="100-2" style="min-width:100%;padding: 0;position: relative;z-index: 99999;">退出登录</el-menu-item>
-                        </el-submenu>
-                    </el-menu>
-                </div>
-            </el-col>
-        </el-row>
+                    <div v-if="login">
+                        <el-menu style="position: absolute;z-index: 99999;width: 100%;">
+                            <el-submenu index="100">
+                                <template slot="title">
+                            <div style="overflow-x: hidden;text-overflow: ellipsis;">
+                                <span>{{userName}}</span>
+                            </div>
+                        </template>
+                                <el-menu-item index="100-1" style="min-width:100%;padding: 0;position: relative;z-index: 99999;">个人中心</el-menu-item>
+                                <el-menu-item @click="logout()" index="100-2" style="min-width:100%;padding: 0;position: relative;z-index: 99999;">退出登录</el-menu-item>
+                            </el-submenu>
+                        </el-menu>
+                    </div>
 
-        <el-row>
-            <el-col id="loginTitle" :xs="24" :md="12" class="text-center" style="padding:0 20px 0 20px">
-                <div style="background: #796AEE !important;color: #fff;height: 100%;">
-                    <h1 style="margin:0 auto;position: relative;top: 50%;">学生注册</h1>
-                </div>
-            </el-col>
-            <el-col id="loginForm" :xs="24" :md="12" class="text-center" style="padding:10px 20px 0 20px">
-                <el-form ref="form" :model="form" label-width="80px" label-position="right" style="max-width: none;">
-                    <el-form-item label="姓名" prop="studentName">
-                        <el-input v-model="form.studentName"></el-input>
-                    </el-form-item>
-
-                    <el-form-item label="身份证" prop="idCard">
-                        <el-input v-model="form.idCard"></el-input>
-                    </el-form-item>
-
-                    <el-form-item label="密码" prop="password">
-                        <el-input type="password" v-model="form.password"></el-input>
-                    </el-form-item>
-
-                    <el-form-item label="确认密码" prop="confirmPassword">
-                        <el-input type="password" v-model="form.confirmPassword"></el-input>
-                    </el-form-item>
-
-                    <el-form-item label="年级" prop="grade">
-                        <el-select v-model="form.grade" placeholder="请选择所在年级" class="w-100" @change="()=>{checkClass()}">
-                            <el-option v-for="data in gradeList" :key="data.grade" :label="data.grade + '级'" :value="data.grade"></el-option>
-                        </el-select>
-                    </el-form-item>
-
-                    <el-form-item label="学制" prop="years">
-                        <el-input-number @change="(v)=>{checkClass()}" v-model="form.years" :min="1" :max="9" label="学制" class="w-100"></el-input-number>
-                    </el-form-item>
-
-                    <el-form-item label="学系" prop="departmentId">
-                        <el-select @change="(v)=>{getMajor(v);checkClass()}" v-model="form.departmentId" placeholder="请选择所在学系" class="w-100">
-                            <el-option v-for="data in departmentList" :key="data.departmentId" :label="data.departmentName" :value="data.departmentId"></el-option>
-                        </el-select>
-                    </el-form-item>
-
-                    <el-form-item label="专业" prop="majorId">
-                        <el-select @change="(v)=>{getClass(form.departmentId,v);checkClass()}" v-model="form.majorId" placeholder="请选择所在专业" class="w-100">
-                            <el-option v-for="data in majorList" :key="data.majorId" :label="data.majorName" :value="data.majorId"></el-option>
-                        </el-select>
-                    </el-form-item>
-
-                    <el-form-item label="班次" prop="Class">
-                        <el-select :disabled="classDisabled" v-model="form.class" placeholder="请选择所在班次" class="w-100">
-                            <el-option v-for="data in classList" :key="data.class" :label="data.class + '班'" :value="data.class"></el-option>
-                        </el-select>
-                    </el-form-item>
-
-                    <el-form-item label="座号" prop="seat">
-                        <el-input-number v-model="form.seat" :min="1" :max="99" label="座号" class="w-100"></el-input-number>
-                    </el-form-item>
-
-                    <el-form-item label="出生日期" prop="bothUnix">
-                        <el-date-picker v-model="form.bothUnix" type="date" placeholder="选择日期" class="w-100">
-                        </el-date-picker>
-                    </el-form-item>
-
-                    <el-form-item label="性别" prop="gender">
-                        <el-select v-model="form.gender" placeholder="请选择性别" class="w-100">
-                            <el-option label="男" value="男"></el-option>
-                            <el-option label="女" value="女"></el-option>
-                        </el-select>
-                    </el-form-item>
-                </el-form>
-
-
-                <div class="form-group">
-                    <button id="regbtn" type="button" name="loginSubmit" class="btn btn-block btn-primary" @click="onSubmit">注册
-                        </button>
-                    <div id="loginMessage" class="invalid-feedback text-center">
+                    <div v-else>
+                        <el-menu>
+                            <el-menu-item @click="linkTo('./login.html')">登录</el-menu-item>
+                        </el-menu>
                     </div>
                 </div>
-                <small>已有账号?</small>
-                <a href="./login.html" class="signup">&nbsp;登录</a>
             </el-col>
         </el-row>
     </div>
 
     <script>
-        login = new Vue({
-            el: '#login',
+        var header = new Vue({
+            el: "#header",
             data() {
                 return {
                     activeIndex: "1",
+                    login: false,
 
-                    rules: {
-                        studentName: [{
-                            required: true,
-                            message: '请输入姓名',
-                            trigger: ['blur']
-                        }],
-                        idCard: [{
-                            required: true,
-                            message: '请输入身份证号码',
-                            trigger: ['blur']
-                        }],
-                        password: [{
-                            required: true,
-                            message: '请输入密码',
-                            trigger: ['blur']
-                        }],
-                        confirmPassword: [{
-                            required: true,
-                            message: '请输入密码',
-                            trigger: ['blur']
-                        }],
-                    },
+                    userName: undefined,
+                    identity: undefined,
 
-                    departmentList: '',
-                    majorList: '',
-                    gradeList: "",
-                    classList: '',
+                }
+            },
+            mounted() {
+                axios.post('./System/Core/API/Function/CheckLogin/index.php', Qs.stringify({}), ).then(function(res) {
+                    if ('loginStatus' in res.data) {
+                        header.login = res.data.loginStatus
+                        if (res.data.loginStatus) {
+                            axios.post('./System/Core/API/Function/GetIdentity/index.php', Qs.stringify({}), ).then(function(res) {
+                                header.identity = res.data.identity
+                            })
+                            axios.post('./System/Core/API/Function/GetUserInfo/index.php', Qs.stringify({}), ).then(function(res) {
+                                switch (header.identity) {
+                                    case 'Student':
+                                        header.userName = res.data.slice(1)[0].studentName
+                                        break;
+                                    case 'Teacher':
+                                        header.userName = res.data.slice(1)[0].teacherName
+                                        break;
+                                }
+                            })
+                        }
+                    }
+                })
+            },
+            methods: {
+                showWarning(message) {
+                    header.$message({
+                        showClose: true,
+                        message: message,
+                        type: 'warning',
+                        duration: 5000
+                    });
+                },
+                showInfo(message) {
+                    header.$message({
+                        showClose: true,
+                        message: message,
+                        type: 'info',
+                        duration: 5000
+                    });
+                },
+                showSuccess(message) {
+                    header.$message({
+                        showClose: true,
+                        message: message,
+                        type: 'success',
+                        duration: 5000
+                    });
+                },
+                showError(message) {
+                    header.$message({
+                        showClose: true,
+                        message: message,
+                        type: 'error',
+                        duration: 5000
+                    });
+                },
+                linkTo(target) {
+                    linkTo(target)
+                },
+                logout() {
+                    axios.post('./System/Core/API/Function/Logout/index.php', Qs.stringify({}), ).then(function(res) {
+                        if ('error' in res.data) {
+                            header.showError(res.data.error)
+                        }
+                        if ('success' in res.data) {
+                            header.showSuccess(res.data.success)
+                            sleep(function() {
+                                location.href = './index.html'
+                            }, 500)
+                        }
+                        if ('info' in res.data) {
+                            header.showInfo(res.data.info)
+                        }
+                        if ('warning' in res.data) {
+                            header.showWarning(res.data.warning)
+                        }
+                    })
+                }
+            }
+        })
+    </script>
 
-                    classDisabled: true,
+
+
+
+    <div id="login" v-cloak>
+        <el-row id="loginDom" class="mx-auto">
+            <el-col id="loginTitle" :xs="24" :md="24" class="text-center" style="padding:0 20px 0 20px">
+                <div style="background: #796AEE !important;color: #fff;height: 300px;">
+                    <h1 style="margin:0 auto;position: relative;top: 50%;">欢迎登录</h1>
+                </div>
+            </el-col>
+            <el-col id="loginForm" :xs="24" :md="24" class="text-center" style="padding:10px 20px 0 20px">
+                <el-form ref="form" :model="form" label-width="80px" label-position="right" style="max-width: none;">
+                    <el-form-item label="登录身份" prop="identity">
+                        <!-- <el-switch width="100" style="display: block" v-model="identity" inactive-color="#13ce66" active-color="#ff4949" active-text="教工" inactive-text="学生">
+                        </el-switch> -->
+                        <el-radio v-model="identity" label="Student">学生</el-radio>
+                        <el-radio v-model="identity" label="Teacher">教工</el-radio>
+                    </el-form-item>
+
+                    <el-form-item label="账号" prop="account">
+                        <el-input v-model="form.account"></el-input>
+                    </el-form-item>
+
+                    <el-form-item label="密码" prop="password">
+                        <el-input type="password" v-model="form.password"></el-input>
+                    </el-form-item>
+                </el-form>
+
+                <div class="form-group">
+                    <button id="regbtn" type="button" name="loginSubmit" class="btn btn-block btn-primary" @click="onSubmit">登录
+                        </button>
+                    <div id="loginMessage" class="invalid-feedback text-center">
+                    </div>
+                </div>
+            </el-col>
+        </el-row>
+    </div>
+
+    <script>
+        var login = new Vue({
+            el: '#login',
+            data() {
+                return {
+
+                    identity: 'Student',
+
+                    identityList: [{
+                        label: '学生',
+                        value: 'Student'
+                    }, {
+                        label: '教工',
+                        value: 'Teacher'
+                    }],
 
                     form: {
                         // 重要字段
-                        idCard: undefined,
-                        grade: undefined,
-                        years: 3,
-                        departmentId: undefined,
-                        majorId: undefined,
-                        class: undefined,
-
-                        password: undefined,
-                        confirmPassword: undefined,
-                        classId: undefined,
-                        seat: undefined,
-                        studentId: undefined,
-                        studentName: undefined,
-                        gender: undefined,
-                        bothUnix: undefined,
-                        both: undefined,
+                        account: undefined,
+                        password: undefined
                     },
+
+                    studentForm: {
+                        studentId: undefined,
+                        password: undefined
+                    },
+                    teacherForm: {
+                        email: undefined,
+                        password: undefined
+                    }
                 }
             },
             methods: {
@@ -304,48 +337,6 @@
                         duration: 5000
                     });
                 },
-                getClass(departmentId, majorId) {
-                    if (login.form.departmentId && login.form.majorId && login.form.grade && login.form.years) {
-                        axios.post('./System/Core/API/Class/GetClass/index.php', Qs.stringify({
-                            "data": JSON.stringify({
-                                "departmentId": departmentId,
-                                "majorId": majorId,
-                                "grade": login.form.grade,
-                                "years": login.form.years,
-                            }),
-                            "filter": JSON.stringify({
-                                "page": "1",
-                                "num": "999999",
-                            })
-                        }), ).then(function(res) {
-                            console.log(res)
-                            if ('error' in res.data) {
-                                login.showError(res.data.error)
-                            } else {
-                                login.$set(login, 'classList', res.data.slice(1))
-                            }
-                        })
-                    }
-                },
-                getMajor(departmentId) {
-                    console.log(departmentId)
-                    axios.post('./System/Core/API/Major/GetMajor/index.php', Qs.stringify({
-                        "data": JSON.stringify({
-                            "departmentId": departmentId
-                        }),
-                        "filter": JSON.stringify({
-                            "page": "1",
-                            "num": "999999",
-                        })
-                    }), ).then(function(res) {
-                        console.log(res)
-                        if ('error' in res.data) {
-                            login.showError(res.data.error)
-                        } else {
-                            login.$set(login, 'majorList', res.data.slice(1))
-                        }
-                    })
-                },
                 linkTo(target) {
                     linkTo(target)
                 },
@@ -353,154 +344,73 @@
                     for (x in login.form) {
                         if (login.form[x] == null || login.form[x].length == 0) {
                             login.form[x] = undefined
-                        } else {
-                            switch (x) {
-                                case 'seat':
-                                    if (parseInt(login.form[x]) < 10) {
-                                        login.$set(login.form, x, '0' + login.form[x])
-                                    }
-                                    break;
-                                case 'class':
-                                    login.$set(login.form, "classId", login.form.grade + login.form.years + login.form.departmentId + login.form.majorId + login.form.class)
-                                    break;
-                            }
                         }
                     }
 
-                    if (!reister.form.studentName) {
-                        login.showError('请输入姓名')
-                        return
-                    } else if (reister.form.studentName.length <= 1) {
-                        login.showError('姓名格式错误')
+                    if (!login.form.account) {
+                        login.showError('请输入登陆账号')
                         return
                     }
-
-                    var id18 = /^([1-6][1-9]|50)\d{4}(18|19|20)\d{2}((0[1-9])|10|11|12)(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/
-                    var id15 = /^([1-6][1-9]|50)\d{4}\d{2}((0[1-9])|10|11|12)(([0-2][1-9])|10|20|30|31)\d{3}$/
 
                     if (!login.form.password) {
                         login.showError('请输入密码')
                         return
-                    } else if (login.form.password.length < 6) {
-                        login.showError('密码长度不能小于6个字符')
-                        return
-                    } else if (!login.form.confirmPassword) {
-                        login.showError('请输入确认密码')
-                        return
-                    } else if (login.form.password !== login.form.confirmPassword) {
-                        login.showError('密码 与 确认密码不一致')
-                        return
+                    }
+                    switch (login.identity) {
+                        case 'Student':
+                            login.$set(login.studentForm, 'studentId', login.form.account)
+                            login.$set(login.studentForm, 'password', login.form.password)
+                            axios.post('./System/Core/API/Student/login/index.php', Qs.stringify({
+                                "data": JSON.stringify(login.studentForm)
+                            }), ).then(function(res) {
+                                // console.log(res)
+                                if ('error' in res.data) {
+                                    login.showError(res.data.error)
+                                }
+                                if ('success' in res.data) {
+                                    login.showSuccess(res.data.success)
+                                    sleep(function() {
+                                        location.href = './index.html'
+                                    }, 500)
+                                }
+                                if ('info' in res.data) {
+                                    login.showInfo(res.data.info)
+                                }
+                                if ('warning' in res.data) {
+                                    login.showWarning(res.data.warning)
+                                }
+                            })
+                            break;
+                        case 'Teacher':
+                            login.$set(login.teacherForm, 'email', login.form.account)
+                            login.$set(login.teacherForm, 'password', login.form.password)
+                            axios.post('./System/Core/API/Teacher/login/index.php', Qs.stringify({
+                                "data": JSON.stringify(login.teacherForm)
+                            }), ).then(function(res) {
+                                // console.log(res)
+                                if ('error' in res.data) {
+                                    login.showError(res.data.error)
+                                }
+                                if ('success' in res.data) {
+                                    login.showSuccess(res.data.success)
+                                    sleep(function() {
+                                        location.href = './index.html'
+                                    }, 500)
+                                }
+                                if ('info' in res.data) {
+                                    login.showInfo(res.data.info)
+                                }
+                                if ('warning' in res.data) {
+                                    login.showWarning(res.data.warning)
+                                }
+                            })
+                            break;
                     }
 
-                    if (!login.form.idCard) {
-                        login.showError('请输入身份证号码')
-                        return
-                    } else if (!(id18.test(login.form.idCard) || id15.test(login.form.idCard))) {
-                        login.showError('身份证格式不正确')
-                        return
-                    } else {
-                        login.form.idCard = login.form.idCard.toUpperCase()
-                    }
-
-                    if (!login.form.bothUnix) {
-                        login.showError('请输入出生日期')
-                        return
-                    } else {
-                        login.$set(login.form, 'both', login.getDate(login.form.bothUnix))
-                    }
-
-                    if (!login.form.gender) {
-                        login.showError('请选择性别')
-                        return
-                    }
-
-                    if (login.form.classId && login.form.classId.length == 8) {
-                        if (login.form.seat) {
-                            login.form.studentId = login.form.classId + login.form.seat
-                        } else {
-                            login.showError('请填写座号')
-                            return
-                        }
-                    } else {
-                        login.showError('请将年级、院系、专业、班级等相关信息填写完整')
-                        return
-                    }
-
-                    console.log(Qs.stringify({
-                        "data": JSON.stringify(login.form)
-                    }))
-
-                    console.log(JSON.stringify(login.form))
-
-                    axios.post('./System/Core/API/Student/login/index.php', Qs.stringify({
-                        // "data": JSON.stringify({
-                        //     "studentId": "1730502127",
-                        //     "studentName": "郑晓彬",
-                        //     "gender": "男",
-                        //     "both": "1999-07-10",
-                        //     "password": "123+AbC",
-                        //     "grade": "17",
-                        //     "years": "3",
-                        //     "departmentId": "05",
-                        //     "majorId": "02",
-                        //     "classId": "17305021",
-                        //     "class": "1",
-                        //     "seat": "27",
-                        //     "idCard": "440000199907102912"
-                        // }),
-                        "data": JSON.stringify(login.form)
-                    }), ).then(function(res) {
-                        // console.log(res)
-                        if ('error' in res.data) {
-                            login.showError(res.data.error)
-                        }
-                        if ('success' in res.data) {
-                            login.showSuccess(res.data.success)
-                        }
-                        if ('info' in res.data) {
-                            login.showInfo(res.data.info)
-                        }
-                        if ('warning' in res.data) {
-                            login.showWarning(res.data.warning)
-                        }
-                    })
                 }
             },
             mounted() {
-                axios.post('./System/Core/API/Grade/GetGrade/index.php', Qs.stringify({
-                    "data": JSON.stringify({
-                        "": ""
-                    }),
-                    "filter": JSON.stringify({
-                        "page": "1",
-                        "num": "3",
-                        "arg": "distinct",
-                    })
-                }), ).then(function(res) {
-                    console.log(res)
-                    if ('error' in res.data) {
-                        login.showError(res.data.error)
-                    } else {
-                        login.$set(login, 'gradeList', res.data.slice(1))
-                    }
-                })
 
-                axios.post('./System/Core/API/Department/GetDepartment/index.php', Qs.stringify({
-                    "data": JSON.stringify({
-                        "": ""
-                    }),
-                    "filter": JSON.stringify({
-                        "page": "1",
-                        "num": "999999",
-                    })
-                }), ).then(function(res) {
-                    console.log(res)
-                    if ('error' in res.data) {
-                        login.showError(res.data.error)
-                    } else {
-                        login.$set(login, 'departmentList', res.data.slice(1))
-                    }
-                })
             },
             watch: {
 
@@ -515,11 +425,17 @@
                 'min-height': $(window).height() - $('#head').height() - $('#foot').height()
             })
 
-            if ($(window).width() < 992) {
-                $("#loginTitle").height(200)
-            } else {
-                $("#loginTitle").height($("#loginForm").height())
-            }
+            // if ($(window).width() < 992) {
+            //     $("#loginTitle").height(200)
+            //     $("#loginTitle").css({
+            //         "min-height": ""
+            //     })
+            // } else {
+            //     $("#loginTitle").height($("#loginForm").height())
+            //     $("#loginTitle").css({
+            //         "min-height": 300
+            //     })
+            // }
 
         }
         $(document).ready(function() {

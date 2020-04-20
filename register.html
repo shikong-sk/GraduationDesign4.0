@@ -79,7 +79,7 @@
 </head>
 
 <body>
-    <div id="register" v-cloak>
+    <div id="header">
         <el-row>
             <el-col :sm="4" class="text-center">
                 <img style="max-width: 120px;max-height: 50px;text-align: center;" src="Storage/global/Logo.png" alt="logo" class="img-fluid">
@@ -91,20 +91,125 @@
             </el-col>
             <el-col :md="2" :xs="24">
                 <div style="text-align: center;position: relative;z-index: 999999;" class="mx-auto">
-                    <el-menu style="position: absolute;z-index: 99999;width: 100%;">
-                        <el-submenu index="100">
-                            <template slot="title">
-                                <div style="overflow-x: hidden;text-overflow: ellipsis;">
-                                    <span>123123213321321323</span>
-                                </div>
-                            </template>
-                            <el-menu-item index="100-1" style="min-width:100%;padding: 0;position: relative;z-index: 99999;">个人中心</el-menu-item>
-                            <el-menu-item index="100-2" style="min-width:100%;padding: 0;position: relative;z-index: 99999;">退出登录</el-menu-item>
-                        </el-submenu>
-                    </el-menu>
+                    <div v-if="login">
+                        <el-menu style="position: absolute;z-index: 99999;width: 100%;">
+                            <el-submenu index="100">
+                                <template slot="title">
+                            <div style="overflow-x: hidden;text-overflow: ellipsis;">
+                                <span>{{userName}}</span>
+                            </div>
+                        </template>
+                                <el-menu-item index="100-1" style="min-width:100%;padding: 0;position: relative;z-index: 99999;">个人中心</el-menu-item>
+                                <el-menu-item @click="logout()" index="100-2" style="min-width:100%;padding: 0;position: relative;z-index: 99999;">退出登录</el-menu-item>
+                            </el-submenu>
+                        </el-menu>
+                    </div>
+
+                    <div v-else>
+                        <el-menu>
+                            <el-menu-item @click="linkTo('./login.html')">登录</el-menu-item>
+                        </el-menu>
+                    </div>
                 </div>
             </el-col>
         </el-row>
+    </div>
+
+    <script>
+        var header = new Vue({
+            el: "#header",
+            data() {
+                return {
+                    activeIndex: "1",
+                    login: false,
+
+                    userName: undefined,
+                    identity: undefined,
+
+                }
+            },
+            mounted() {
+                axios.post('./System/Core/API/Function/CheckLogin/index.php', Qs.stringify({}), ).then(function(res) {
+                    if ('loginStatus' in res.data) {
+                        header.login = res.data.loginStatus
+                        if (res.data.loginStatus) {
+                            axios.post('./System/Core/API/Function/GetIdentity/index.php', Qs.stringify({}), ).then(function(res) {
+                                header.identity = res.data.identity
+                            })
+                            axios.post('./System/Core/API/Function/GetUserInfo/index.php', Qs.stringify({}), ).then(function(res) {
+                                switch (header.identity) {
+                                    case 'Student':
+                                        header.userName = res.data.slice(1)[0].studentName
+                                        break;
+                                    case 'Teacher':
+                                        header.userName = res.data.slice(1)[0].teacherName
+                                        break;
+                                }
+                            })
+                        }
+                    }
+                })
+            },
+            methods: {
+                showWarning(message) {
+                    header.$message({
+                        showClose: true,
+                        message: message,
+                        type: 'warning',
+                        duration: 5000
+                    });
+                },
+                showInfo(message) {
+                    header.$message({
+                        showClose: true,
+                        message: message,
+                        type: 'info',
+                        duration: 5000
+                    });
+                },
+                showSuccess(message) {
+                    header.$message({
+                        showClose: true,
+                        message: message,
+                        type: 'success',
+                        duration: 5000
+                    });
+                },
+                showError(message) {
+                    header.$message({
+                        showClose: true,
+                        message: message,
+                        type: 'error',
+                        duration: 5000
+                    });
+                },
+                linkTo(target) {
+                    linkTo(target)
+                },
+                logout() {
+                    axios.post('./System/Core/API/Function/Logout/index.php', Qs.stringify({}), ).then(function(res) {
+                        if ('error' in res.data) {
+                            header.showError(res.data.error)
+                        }
+                        if ('success' in res.data) {
+                            header.showSuccess(res.data.success)
+                            sleep(function() {
+                                location.href = './index.html'
+                            }, 500)
+                        }
+                        if ('info' in res.data) {
+                            header.showInfo(res.data.info)
+                        }
+                        if ('warning' in res.data) {
+                            header.showWarning(res.data.warning)
+                        }
+                    })
+                }
+            }
+        })
+    </script>
+
+    <div id="register" v-cloak>
 
         <el-row>
             <el-col id="registerTitle" :xs="24" :md="12" class="text-center" style="padding:0 20px 0 20px">
@@ -370,10 +475,10 @@
                         }
                     }
 
-                    if (!reister.form.studentName) {
+                    if (!register.form.studentName) {
                         register.showError('请输入姓名')
                         return
-                    } else if (reister.form.studentName.length <= 1) {
+                    } else if (register.form.studentName.length <= 1) {
                         register.showError('姓名格式错误')
                         return
                     }
