@@ -4,4 +4,4 @@ require_once(dirname(__FILE__) .'/../../../Class/TeacherClass.php');
 
 $teacher = new TeacherClass();
 
-echo $teacher->logout();
+echo $teacher->getUserInfo();

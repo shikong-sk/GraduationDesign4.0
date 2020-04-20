@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title></title>
+    <script src="Assets/js/jquery-3.3.1.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="Assets/js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="Assets/js/popper.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="Assets/js/vue.js" type="text/javascript" charset="utf-8"></script>
+    <script src="Assets/js/axios.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="Assets/js/qs.min.js" type="text/javascript" charset="utf-8"></script>
+
+    <!-- <script src="Assets/js/iview.min.js" type="text/javascript" charset="utf-8"></script> -->
+    <!-- <link rel="stylesheet" type="text/css" href="Assets/css/iview.css" /> -->
+
+    <link rel="stylesheet" type="text/css" href="Assets/css/bootstrap.min.css" />
+
+    <link rel="stylesheet" type="text/css" href="Assets/css/swiper.min.css" />
+
+    <script src="Assets/js/swiper.min.js" type="text/javascript" charset="utf-8"></script>
+
+    <script src="Assets/js/element-ui.js" type="text/javascript" charset="utf-8"></script>
+    <link rel="stylesheet" type="text/css" href="Assets/css/element-ui.css" />
+
+    <script src="Assets/js/vuex.js" type="text/javascript" charset="utf-8"></script>
+
+    <script src="Assets/js/tinymce/tinymce.min.js" type="text/javascript" charset="utf-8"></script>
+
+    <script src="Assets/js/jquery.base64.js" type="text/javascript" charset="utf-8"></script>
+
+    <script src="Assets/js/echarts.min.js" type="text/javascript" charset="utf-8"></script>
+
+
+
+    <style type="text/css">
+        body,
+        html {
+            overflow-x: hidden;
+        }
+        
+        .text-danger {
+            color: #F56C6C !important;
+        }
+        
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+
+    <script type="text/javascript">
+        //公用函数定义
+        function sleep(fun, ms) {
+            setTimeout(fun, ms);
+        }
+
+        function loop(fun, ms) {
+            fun();
+            setInterval(fun, ms);
+        }
+
+        addEventListener(
+            "load",
+            function() {
+                setTimeout(hideURLbar, 0);
+            },
+            false
+        );
+
+        function hideURLbar() {
+            window.scrollTo(0, 1);
+        }
+
+        function linkTo(target) {
+            window.location = target
+        }
+    </script>
+</head>
+
+<body>
+    <div id="header" v-cloak>
+        <el-row>
+            <el-col :sm="4" class="text-center">
+                <img style="max-width: 120px;max-height: 50px;text-align: center;" src="Storage/global/Logo.png" alt="logo" class="img-fluid">
+            </el-col>
+            <el-col :sm="18">
+                <el-menu :default-active="activeIndex" mode="horizontal">
+                    <el-menu-item index="1" @click="linkTo('./index.html')">首页</el-menu-item>
+                </el-menu>
+            </el-col>
+            <el-col :md="2" :xs="24">
+                <div style="text-align: center;position: relative;z-index: 999999;" class="mx-auto">
+                    <el-menu style="position: absolute;z-index: 99999;width: 100%;">
+                        <el-submenu index="100">
+                            <template slot="title">
+                                <div style="overflow-x: hidden;text-overflow: ellipsis;">
+                                    <span>123123213321321323</span>
+                                </div>
+                            </template>
+                            <el-menu-item index="100-1" style="min-width:100%;padding: 0;position: relative;z-index: 99999;">个人中心</el-menu-item>
+                            <el-menu-item index="100-2" style="min-width:100%;padding: 0;position: relative;z-index: 99999;">退出登录</el-menu-item>
+                        </el-submenu>
+                    </el-menu>
+                </div>
+            </el-col>
+        </el-row>
+
+    </div>
+
+    <script>
+        header = new Vue({
+            el: '#header',
+            data() {
+                return {
+                    activeIndex: "1",
+                }
+            }
+        })

@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta charset="utf-8">
-		<title>111</title>
+		<title>孔尚教育</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<script src="Assets/js/jquery-3.3.1.min.js" type="text/javascript" charset="utf-8"></script>
@@ -12,33 +12,165 @@
 		<script src="Assets/js/axios.min.js" type="text/javascript" charset="utf-8"></script>
 		<script src="Assets/js/qs.min.js" type="text/javascript" charset="utf-8"></script>
 		<link rel="stylesheet" type="text/css" href="Assets/css/bootstrap.min.css" />
-		
+
 		<link rel="stylesheet" type="text/css" href="Assets/css/swiper.min.css" />
-		
+
 		<script src="Assets/js/swiper.min.js" type="text/javascript" charset="utf-8"></script>
-		
+
 		<script src="Assets/js/element-ui.js" type="text/javascript" charset="utf-8"></script>
 		<link rel="stylesheet" type="text/css" href="Assets/css/element-ui.css" />
-		
+
 		<script src="Assets/js/vuex.js" type="text/javascript" charset="utf-8"></script>
-		
+
 		<script src="Assets/js/tinymce/tinymce.min.js" type="text/javascript" charset="utf-8"></script>
-		
+
 		<script src="Assets/js/jquery.base64.js" type="text/javascript" charset="utf-8"></script>
-		
+
 		<script src="Assets/js/echarts.min.js" type="text/javascript" charset="utf-8"></script>
 	</head>
+	<style>
+		.header{
+			width: 100%;
+			height: 100px;
+			
+			background-color: #0080FF;
+		}
+		.head_box{
+			margin: 0 auto;  
+			width: 1200px;
+			height: 100px;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+		}
+		.header .head_box .logo{
+			width: 100px;
+			height: 80px;
+		}
+		.header .head_box .logo img{
+			width: 100%;
+			height: 100%;
+		}
+		.head_box .navbar{
+			width: 50%;
+			
+		}
+		.head_box .navbar ul{
+			display: flex;
+			justify-content: space-around;
+			align-items: center;
+		}
+		.head_box .navbar ul>li{
+			list-style: none;
+			color: #EEEEEE;
+			font-size: 26px;
+			font-weight: 600;
+			margin-left: 25px;
+			line-height: 80px;
+		}
+		.banner{
+			width: 100%;
+			height: 600px;
+		}
+		.banner .banner_img{
+			width: 100%;
+			height: 100%;
+		}
+		.banner_text{
+			height: auto;
+			position: absolute;
+			left: 25%;
+			top: 20%;
+		}
+		.banner_text span{
+			font-size: 68px;
+			font-weight: 600;
+			color: #ffffff;
+		}
+		.banner_text p{
+			font-size: 36px;
+			color: #cccccc;
+		}
+		.content{
+			width: 100%;
+			height: auto;
+		}
+		.content .box{
+			width: 1200px;
+			margin: 0 auto; 
+		}
+		.content .box .box1{
+			display: flex;
+			justify-content: center;
+			flex-wrap: wrap;
+		}
+		.content .box .box1 .news_card{
+			text-align: center;
+			padding: 140px;
+			font-size: 36px;
+			margin: 20px;
+			border-radius: 15px;
+			box-shadow: 0px 2px 20px 0px rgba(0,0,0,0.13);
+		}
+	</style>
 	<body>
-		<div id="contain">
-			<el-button type="text" disabled>文字按钮</el-button>
+		<header>
+			<div class="header">
+				<div class="head_box">
+					<div class="logo">
+						<img src="http://b.zol-img.com.cn/desk/bizhi/start/3/1372320074312.jpg" />
+					</div>
+					<div class="navbar">
+						<ul>
+							<li>首页</li>
+							<li>新闻</li>
+							<li>教师</li>
+							<li>学生</li>
+							<li>专业</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</header>
+		<div class="mian">
+			<div class="banner">
+				<div class="banner_text">
+					<span>欢迎来到孔尚学院</span>
+					<p>孔尚学院，为您的孩子，培养高尚品德</p>
+				</div>
+					<img class="banner_img" src="http://b.zol-img.com.cn/desk/bizhi/start/3/1372320074312.jpg" />W
+			</div>
+			<div class="content">
+				<div class="box">
+					<div class="box1">
+						<div class="news_card">
+							1111
+						</div>
+						<div class="news_card">
+							1111
+						</div>
+						<div class="news_card">
+							1111
+						</div>
+						<div class="news_card">
+							1111
+						</div>
+						<div class="news_card">
+							1111
+						</div>
+						
+					</div>
+				</div>
+			</div>
 		</div>
 	</body>
 	<script>
-		var contain = new Vue({
-			el:'#contain',
-			data:{
-				
-			}
+		var mySwiper = new Swiper('#banner', {
+			autoplay: true, //可选选项，自动滑动
+			grabCursor: true,
+			pagination: {
+				el: '.swiper-pagination',
+			},
 		})
 	</script>
 </html>
