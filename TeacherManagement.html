@@ -209,4 +209,158 @@
         })
     </script>
 
+    <div id="management">
+        <el-row>
+            <el-col :xs="nav_Menu_xs" :sm="nav_Menu_sm" :md="nav_Menu_md">
+                <el-menu :default-active="index" :collapse="collapse" class="el-menu-vertical-demo" @select="(i,path)=>{index = i;log(path)}" @open="" @close="">
+                    <el-submenu index="0">
+                        <template slot="title">
+                            <div @click="()=>{collapse = !collapse}">
+                                <i v-if="collapse" class="el-icon-s-unfold"></i>
+                                <i v-else class="el-icon-s-fold"></i>
+                                <span slot="title">折叠</span>
+                            </div>
+                        </template>
+                    </el-submenu>
+
+                    <el-submenu index="1">
+                        <template slot="title">
+                            <i class="el-icon-location"></i>
+                            <span>导航一</span>
+                        </template>
+                        <el-menu-item-group>
+                            <template slot="title">分组一</template>
+                            <el-menu-item index="1-1">选项1</el-menu-item>
+                            <el-menu-item index="1-2">选项2</el-menu-item>
+                        </el-menu-item-group>
+                        <el-menu-item-group title="分组2">
+                            <el-menu-item index="1-3">选项3</el-menu-item>
+                        </el-menu-item-group>
+                        <el-submenu index="1-4">
+                            <template slot="title">选项4</template>
+                            <el-menu-item index="1-4-1">选项1</el-menu-item>
+                        </el-submenu>
+                    </el-submenu>
+                    <el-menu-item index="2">
+                        <i class="el-icon-menu"></i>
+                        <span slot="title">导航二</span>
+                    </el-menu-item>
+                    <el-menu-item index="3" disabled>
+                        <i class="el-icon-document"></i>
+                        <span slot="title">导航三</span>
+                    </el-menu-item>
+                    <el-menu-item index="4">
+                        <i class="el-icon-setting"></i>
+                        <span slot="title">导航四</span>
+                    </el-menu-item>
+                </el-menu>
+            </el-col>
+            <el-col :xs="24 - nav_Menu_xs == 0?24:24 - nav_Menu_xs" :sm="24 - nav_Menu_sm" :md="24 - nav_Menu_md">
+                <span>test</span>
+            </el-col>
+        </el-row>
+    </div>
+    <script>
+        var management = new Vue({
+            el: "#management",
+            data() {
+                return {
+                    index: '1-1',
+                    collapse: false,
+                    nav_Menu_xs: 24,
+                    nav_Menu_sm: 4,
+                    nav_Menu_md: 4,
+
+                    identity: undefined,
+                    permission: undefined,
+                    permissionList: {
+                        0: '超级管理员',
+                        1: '管理员',
+                        2: '普通教工'
+                    },
+                    permissionName: undefined,
+
+                }
+            },
+            watch: {
+                collapse(n, o) {
+                    if (n) {
+                        this.nav_Menu_xs = 5
+                        this.nav_Menu_sm = 2
+                        this.nav_Menu_md = 2
+                    } else {
+                        this.nav_Menu_xs = 24
+                        this.nav_Menu_sm = 4
+                        this.nav_Menu_md = 3
+                    }
+                }
+            },
+            mounted() {
+                axios.post('./System/Core/API/Function/CheckLogin/index.php', Qs.stringify({}), ).then(function(res) {
+                    if ('loginStatus' in res.data) {
+                        management.login = res.data.loginStatus
+                        if (res.data.loginStatus) {
+                            axios.post('./System/Core/API/Function/GetIdentity/index.php', Qs.stringify({}), ).then(function(res) {
+                                management.identity = res.data.identity
+                                if (management.identity != 'Teacher') {
+                                    management.$alert('您无权访问此页面', '错误', {
+                                        confirmButtonText: '确定',
+                                        callback: action => {
+                                            location.href = './index.html'
+                                        }
+                                    });
+                                } else {
+                                    axios.post('./System/Core/API/Management/GetPermission/index.php', Qs.stringify({}), ).then(function(res) {
+                                        management.permission = res.data
+                                        management.permissionName = management.permissionList[management.permission]
+                                    })
+                                }
+                            })
+                        }
+                    }
+                })
+            },
+            methods: {
+                log(v) {
+                    console.log(v)
+                },
+                showWarning(message) {
+                    header.$message({
+                        showClose: true,
+                        message: message,
+                        type: 'warning',
+                        duration: 5000
+                    });
+                },
+                showInfo(message) {
+                    header.$message({
+                        showClose: true,
+                        message: message,
+                        type: 'info',
+                        duration: 5000
+                    });
+                },
+                showSuccess(message) {
+                    header.$message({
+                        showClose: true,
+                        message: message,
+                        type: 'success',
+                        duration: 5000
+                    });
+                },
+                showError(message) {
+                    header.$message({
+                        showClose: true,
+                        message: message,
+                        type: 'error',
+                        duration: 5000
+                    });
+                },
+                linkTo(target) {
+                    linkTo(target)
+                },
+            }
+        })
+    </script>
+
 </body>
