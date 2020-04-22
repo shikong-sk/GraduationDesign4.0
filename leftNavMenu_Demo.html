@@ -84,16 +84,9 @@
         <el-row>
             <el-col :xs="nav_Menu_xs" :sm="nav_Menu_sm" :md="nav_Menu_md">
                 <el-menu :default-active="index" :collapse="collapse" class="el-menu-vertical-demo" @select="(i,path)=>{index = i;log(path)}" @open="" @close="">
-                    <el-submenu index="0">
-                        <template slot="title">
-                            <div @click="()=>{collapse = !collapse}">
-                                <i v-if="collapse" class="el-icon-s-unfold"></i>
-                                <i v-else class="el-icon-s-fold"></i>
-                                <span slot="title">折叠</span>
-                            </div>
-                            
-                        </template>
-                    </el-submenu>
+                    <el-button type="text" @click="()=>{collapse = !collapse}" :icon="collapse?'el-icon-s-unfold':'el-icon-s-fold'" class="w-100">
+                        {{collapse?'':''}}
+                    </el-button>
 
                     <el-submenu index="1">
                         <template slot="title">

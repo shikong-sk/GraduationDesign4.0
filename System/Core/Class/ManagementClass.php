@@ -396,6 +396,18 @@ class ManagementClass
 
         $this->checkAccess();
 
+        $permission = $this->getPermission();
+        $acceptList = array();
+
+        if($permission != '0' && $permission != '1')
+        {
+
+            foreach ($this->db->selectDistinctQuery('classId',$this->courseTable)->andQueryList(array('teacherId'=>$_SESSION['ms_id']))->getFetchAssoc() as $k=>$v)
+            {
+                array_push($acceptList,$v['classId']);
+            }
+        }
+
         if (!is_array($data)) {
             if (!is_string($data)) {
                 die(json_encode(array("error" => "JSON data 解析失败"), JSON_UNESCAPED_UNICODE));
@@ -505,9 +517,35 @@ class ManagementClass
             unset($data['address']);
         }
 
+        if(isset($data["classId"]))
+        {
+            if($permission != '0' && $permission != '1')
+            {
+                if(!in_array($data["classId"],$acceptList))
+                {
+                    return json_encode(array("error"=>"您没有查看该班级学生的权限"),JSON_UNESCAPED_UNICODE);
+                }
+            }
+            else{
+                $query->andQuery('classId', "{$data['classId']}");
+            }
+            unset($data['address']);
+        }
+        else
+        {
+            if($permission != '0' && $permission != '1')
+            {
+                $query->andLeftTripQuery_Or();
+                foreach ($acceptList as $t)
+                {
+                    $query->orQueryList(array('classId'=>$t));
+                }
+                $query->andRightTripQuery_Or();
+            }
+        }
+
 
         $query->andQueryList($data);
-
 
         return $query->orderBy('grade,departmentId,majorId,years,seat', 1)->selectLimit($page, $num)->getFetchAssocNumJson();
     }
