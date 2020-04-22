@@ -4,4 +4,4 @@ require_once(dirname(__FILE__) .'/../../../Class/DepartmentClass.php');
 
 $department = new DepartmentClass();
 
-echo $department->deleteDepartment($_POST["data"]);
+echo $department->updateDepartment($_POST["data"]);

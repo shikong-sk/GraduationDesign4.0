@@ -59,11 +59,11 @@ class ScoreClass
             }
 
             if (strlen($data) == 0) {
-                $data = array();
+                $data = "{}";
             }
 
             $data = json_decode($data, true);
-            if (!$data) {
+            if (!is_array($data)) {
                 return json_encode(array("error" => "JSON data 解析失败"), JSON_UNESCAPED_UNICODE);
             }
         }
@@ -148,11 +148,11 @@ class ScoreClass
             }
 
             if (strlen($data) == 0) {
-                $data = array();
+                $data = "{}";
             }
 
             $data = json_decode($data, true);
-            if (!$data) {
+            if (!is_array($data)) {
                 return json_encode(array("error" => "JSON data 解析失败"), JSON_UNESCAPED_UNICODE);
             }
         }
@@ -252,11 +252,11 @@ class ScoreClass
             }
 
             if (strlen($data) == 0) {
-                $data = array();
+                $data = "{}";
             }
 
             $data = json_decode($data, true);
-            if (!$data) {
+            if (!is_array($data)) {
                 return json_encode(array("error" => "JSON data 解析失败"), JSON_UNESCAPED_UNICODE);
             }
         }
@@ -380,11 +380,11 @@ class ScoreClass
             }
 
             if (strlen($data) == 0) {
-                $data = array();
+                $data = "{}";
             }
 
             $data = json_decode($data, true);
-            if (!$data) {
+            if (!is_array($data)) {
                 return json_encode(array("error" => "JSON data 解析失败"), JSON_UNESCAPED_UNICODE);
             }
         }

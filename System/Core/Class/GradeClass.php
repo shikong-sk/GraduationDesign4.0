@@ -54,12 +54,12 @@ class GradeClass
             }
 
             if (strlen($data) == 0) {
-                $data = Array();
+                $data = "{}";
             }
 
             $data = json_decode($data, true);
-            if (!$data) {
-                return json_encode(Array("error" => "JSON data 解析失败"), JSON_UNESCAPED_UNICODE);
+            if (!is_array($data)) {
+                return json_encode(array("error" => "JSON data 解析失败"), JSON_UNESCAPED_UNICODE);
             }
         }
 
@@ -152,12 +152,12 @@ class GradeClass
             }
 
             if (strlen($data) == 0) {
-                $data = Array();
+                $data = "{}";
             }
 
             $data = json_decode($data, true);
-            if (!$data) {
-                return json_encode(Array("error" => "JSON data 解析失败"), JSON_UNESCAPED_UNICODE);
+            if (!is_array($data)) {
+                return json_encode(array("error" => "JSON data 解析失败"), JSON_UNESCAPED_UNICODE);
             }
         }
 
@@ -240,12 +240,12 @@ class GradeClass
             }
 
             if (strlen($data) == 0) {
-                $data = Array();
+                $data = "{}";
             }
 
             $data = json_decode($data, true);
-            if (!$data) {
-                return json_encode(Array("error" => "JSON data 解析失败"), JSON_UNESCAPED_UNICODE);
+            if (!is_array($data)) {
+                return json_encode(array("error" => "JSON data 解析失败"), JSON_UNESCAPED_UNICODE);
             }
         }
 
@@ -351,12 +351,12 @@ class GradeClass
             }
 
             if (strlen($data) == 0) {
-                $data = Array();
+                $data = "{}";
             }
 
             $data = json_decode($data, true);
-            if (!$data) {
-                return json_encode(Array("error" => "JSON data 解析失败"), JSON_UNESCAPED_UNICODE);
+            if (!is_array($data)) {
+                return json_encode(array("error" => "JSON data 解析失败"), JSON_UNESCAPED_UNICODE);
             }
         }
 

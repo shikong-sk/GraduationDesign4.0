@@ -223,9 +223,10 @@
                             <span>学生详情</span>
                         </template>
                         <el-menu-item-group>
-                            <el-menu-item index="1-1">班级信息</el-menu-item>
-                            <el-menu-item index="1-2">学生信息</el-menu-item>
-                            <el-menu-item index="1-3">分数登记</el-menu-item>
+                            <el-menu-item index="1-1">课程信息</el-menu-item>
+                            <el-menu-item index="1-2">班级信息</el-menu-item>
+                            <el-menu-item index="1-3">学生信息</el-menu-item>
+                            <el-menu-item index="1-4">分数登记</el-menu-item>
                         </el-menu-item-group>
                         <el-menu-item-group title="管理员功能" v-if="permission == '0' || permission == '1' ">
                             <el-menu-item index="1-4">学生信息管理</el-menu-item>
@@ -278,6 +279,17 @@
                     },
                     permissionName: undefined,
 
+                    page: 1,
+                    num: 10,
+
+                    dataChannel: {
+                        '1-1': './System/Core/API/Course/GetCourse/index.php',
+                        '1-2': './System/Core/API/Class/GetClass/index.php',
+                        '1-3': './System/Core/API/Management/GetStudent/index.php',
+                        '1-4': './System/Core/API/Score/GetScore/index.php',
+                    },
+                    classFilter: {},
+                    studentFilter: {}
                 }
             },
             watch: {
@@ -312,13 +324,51 @@
                                         management.permission = res.data
                                         management.permissionName = management.permissionList[management.permission]
                                     })
+
+                                    management.getData()
                                 }
                             })
+                        } else {
+                            management.$alert('请先登录', '错误', {
+                                confirmButtonText: '确定',
+                                callback: action => {
+                                    location.href = './login.html'
+                                }
+                            });
                         }
                     }
                 })
             },
             methods: {
+                getData() {
+                    axios.post(management.dataChannel[management.index], Qs.stringify({
+                            "data": JSON.stringify({}),
+                            "filter": JSON.stringify({
+                                "page": management.page,
+                                "num": management.num
+                            })
+                        }))
+                        .then(function(res) {
+                            console.log(res)
+                        })
+                },
+                getDate(unixTime) {
+                    unixTime = new Date(unixTime)
+                    Y = unixTime.getFullYear()
+                    M = (unixTime.getMonth() + 1) < 10 ? '0' + (unixTime.getMonth() + 1) : (unixTime.getMonth() + 1)
+                    D = unixTime.getDate() < 10 ? '0' + unixTime.getDate() : unixTime.getDate()
+                    return Y + '-' + M + '-' + D
+                },
+                getTime(unixTime) {
+                    unixTime = new Date(unixTime)
+                    Y = unixTime.getFullYear()
+                    M = (unixTime.getMonth() + 1) < 10 ? '0' + (unixTime.getMonth() + 1) : (unixTime.getMonth() + 1)
+                    D = unixTime.getDate() < 10 ? '0' + unixTime.getDate() : unixTime.getDate()
+                    H = unixTime.getHours() < 10 ? '0' + unixTime.getHours() : unixTime.getHours()
+                    i = unixTime.getMinutes() < 10 ? '0' + unixTime.getMinutes() : unixTime.getMinutes()
+                    S = unixTime.getSeconds() < 10 ? '0' + unixTime.getSeconds() : unixTime.getSeconds()
+                    return Y + '-' + M + '-' + D + ' ' + H + ':' + i + ':' + S
+                },
                 log(v) {
                     console.log(v)
                 },
