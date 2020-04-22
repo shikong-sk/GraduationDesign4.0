@@ -212,7 +212,7 @@
     <div id="management">
         <el-row>
             <el-col :xs="nav_Menu_xs" :sm="nav_Menu_sm" :md="nav_Menu_md">
-                <el-menu style="overflow-x:hidden" :default-active="index" :collapse="collapse" @select="(i,path)=>{index = i;log(path)}" @open="" @close="">
+                <el-menu style="overflow-x:hidden" :default-active="index" :collapse="collapse" @select="(i,path)=>{this.$set(this,'index',i);log(path)}" @open="" @close="">
                     <el-button type="text" @click="()=>{collapse = !collapse}" :icon="collapse?'el-icon-s-unfold':'el-icon-s-fold'" class="w-100">
                         {{collapse?'':''}}
                     </el-button>
@@ -282,12 +282,27 @@
                     page: 1,
                     num: 10,
 
+
                     dataChannel: {
                         '1-1': './System/Core/API/Course/GetCourse/index.php',
                         '1-2': './System/Core/API/Class/GetClass/index.php',
                         '1-3': './System/Core/API/Management/GetStudent/index.php',
                         '1-4': './System/Core/API/Score/GetScore/index.php',
                     },
+                    dataModel: {
+                        '1-1': {
+                            classId: undefined,
+                            courseName: undefined,
+                            teacherName: undefined,
+                            classId: undefined,
+                            teacherId: undefined,
+
+                            startTime: undefined,
+                            endTime: undefined,
+                            public: undefined
+                        }
+                    },
+
                     classFilter: {},
                     studentFilter: {}
                 }
@@ -303,6 +318,10 @@
                         this.nav_Menu_sm = 4
                         this.nav_Menu_md = 3
                     }
+                },
+                index(n, o) {
+                    this.page = 1
+                    this.num = 10
                 }
             },
             mounted() {
@@ -342,7 +361,9 @@
             methods: {
                 getData() {
                     axios.post(management.dataChannel[management.index], Qs.stringify({
-                            "data": JSON.stringify({}),
+                            "data": JSON.stringify(
+                                management.dataModel[management.index]
+                            ),
                             "filter": JSON.stringify({
                                 "page": management.page,
                                 "num": management.num
