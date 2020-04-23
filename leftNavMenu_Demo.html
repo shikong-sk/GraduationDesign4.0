@@ -80,7 +80,7 @@
 
 <body>
 
-    <div id="test">
+    <div id="test" v-cloak>
         <el-row>
             <el-col :xs="nav_Menu_xs" :sm="nav_Menu_sm" :md="nav_Menu_md">
                 <el-menu :default-active="index" :collapse="collapse" class="el-menu-vertical-demo" @select="(i,path)=>{index = i;log(path)}" @open="" @close="">

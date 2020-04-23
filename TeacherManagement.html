@@ -79,7 +79,7 @@
 </head>
 
 <body>
-    <div id="header">
+    <div id="header" v-cloak>
         <el-row>
             <el-col :sm="4" class="text-center">
                 <img style="max-width: 120px;max-height: 50px;text-align: center;" src="Storage/global/Logo.png" alt="logo" class="img-fluid">
@@ -90,9 +90,9 @@
                 </el-menu>
             </el-col>
             <el-col :md="2" :xs="24">
-                <div style="text-align: center;position: relative;z-index: 999999;height:61px" class="mx-auto">
+                <div style="text-align: center;position: relative;height:61px" class="mx-auto">
                     <div v-if="login">
-                        <el-menu style="position: absolute;z-index: 99999;width: 100%;">
+                        <el-menu style="position: absolute;z-index: 99;width: 100%;">
                             <el-submenu index="100">
                                 <template slot="title">
                                     <div style="overflow-x: hidden;text-overflow: ellipsis;">
@@ -209,7 +209,7 @@
         })
     </script>
 
-    <div id="management">
+    <div id="management" v-cloak>
         <el-row>
             <el-col :xs="nav_Menu_xs" :sm="nav_Menu_sm" :md="nav_Menu_md">
                 <el-menu style="overflow-x:hidden" :default-active="index" :collapse="collapse" @select="(i,path)=>{this.$set(this,'index',i);log(path)}" @open="" @close="">
@@ -255,6 +255,7 @@
                 </el-menu>
             </el-col>
             <el-col :xs="24 - nav_Menu_xs == 0?24:24 - nav_Menu_xs" :sm="24 - nav_Menu_sm" :md="24 - nav_Menu_md">
+
                 <div v-if="index == '1-1'">
                     <el-table :data="data" style="width: 100%" border>
                         <el-table-column label="课程id" width="155" :show-overflow-tooltip="true">
@@ -493,6 +494,234 @@
                                 <el-tag v-if="scope.row.flag == 1" type="danger">补考</el-tag>
                                 <el-tag v-if="scope.row.flag == 2" type="danger">重修</el-tag>
 							</template>
+                        </el-table-column>
+
+                        <el-table-column fixed="right" label="操作" width="60">
+                            <template slot-scope="scope">
+								<div class="text-center">
+									<el-button style="padding:5px 0;margin:0 auto" @click="" type="text" size="small">查看</el-button>
+								</div>
+							</template>
+                        </el-table-column>
+                    </el-table>
+                </div>
+
+                <div v-if="index == '1-5'">
+                    <el-table :data="data" style="width: 100%" border>
+                        <el-table-column label="学号" width="155" :show-overflow-tooltip="true">
+                            <template slot-scope="scope">
+								{{scope.row.studentId}}
+							</template>
+                        </el-table-column>
+
+                        <el-table-column label="学生姓名" width="155" :show-overflow-tooltip="true">
+                            <template slot-scope="scope">
+								{{scope.row.studentName}}
+							</template>
+                        </el-table-column>
+
+                        <el-table-column label="院系名" width="155" :show-overflow-tooltip="true">
+                            <template slot-scope="scope">
+								{{scope.row.departmentName}}
+							</template>
+                        </el-table-column>
+
+                        <el-table-column label="专业编号" width="155" :show-overflow-tooltip="true">
+                            <template slot-scope="scope">
+								{{scope.row.majorId}}
+							</template>
+                        </el-table-column>
+
+                        <el-table-column label="专业名称" width="155" :show-overflow-tooltip="true">
+                            <template slot-scope="scope">
+								{{scope.row.majorName}}
+							</template>
+                        </el-table-column>
+
+                        <el-table-column label="学制" width="155" :show-overflow-tooltip="true">
+                            <template slot-scope="scope">
+								{{scope.row.years}}年
+							</template>
+                        </el-table-column>
+
+                        <el-table-column label="班级编号" width="155" :show-overflow-tooltip="true">
+                            <template slot-scope="scope">
+								{{scope.row.classId}}
+							</template>
+                        </el-table-column>
+
+                        <el-table-column label="班号" width="155" :show-overflow-tooltip="true">
+                            <template slot-scope="scope">
+								{{scope.row.class}}班
+							</template>
+                        </el-table-column>
+
+                        <el-table-column label="联系方式" width="155" :show-overflow-tooltip="true">
+                            <template slot-scope="scope">
+                                {{scope.row.contact}}
+							</template>
+                        </el-table-column>
+
+                        <el-table-column label="账号状态" width="100" :show-overflow-tooltip="true">
+                            <template slot-scope="scope">
+                                <el-tag v-if="scope.row.active == 1" type="success">已激活</el-tag>
+                                <el-tag v-if="scope.row.active == 0" type="danger">未激活</el-tag>
+							</template>
+                        </el-table-column>
+
+                        <el-table-column fixed="right" label="操作" width="60">
+                            <template slot-scope="scope">
+								<div class="text-center">
+									<el-button style="padding:5px 0;margin:0 auto" @click="" type="text" size="small">查看</el-button>
+								</div>
+							</template>
+                        </el-table-column>
+                    </el-table>
+                </div>
+
+                <div v-if="index == '1-6'">
+                    <el-table :data="data" style="width: 100%" border>
+                        <el-table-column label="学号" width="155" :show-overflow-tooltip="true">
+                            <template slot-scope="scope">
+								{{scope.row.studentId}}
+							</template>
+                        </el-table-column>
+
+                        <el-table-column label="学生姓名" width="155" :show-overflow-tooltip="true">
+                            <template slot-scope="scope">
+								{{scope.row.studentName}}
+							</template>
+                        </el-table-column>
+
+                        <el-table-column label="课程id" width="155" :show-overflow-tooltip="true">
+                            <template slot-scope="scope">
+								{{scope.row.courseId}}
+							</template>
+                        </el-table-column>
+
+                        <el-table-column label="教工id" width="155" :show-overflow-tooltip="true">
+                            <template slot-scope="scope">
+								{{scope.row.teacherId}}
+							</template>
+                        </el-table-column>
+
+                        <el-table-column label="教工姓名" width="155" :show-overflow-tooltip="true">
+                            <template slot-scope="scope">
+								{{scope.row.teacherName}}
+							</template>
+                        </el-table-column>
+
+                        <el-table-column label="成绩" width="155" :show-overflow-tooltip="true">
+                            <template slot-scope="scope">
+								{{scope.row.score}}
+							</template>
+                        </el-table-column>
+
+                        <el-table-column label="考试类型" :show-overflow-tooltip="true">
+                            <template slot-scope="scope">
+                                <el-tag v-if="scope.row.flag == 0" type="success">正考</el-tag>
+                                <el-tag v-if="scope.row.flag == 1" type="danger">补考</el-tag>
+                                <el-tag v-if="scope.row.flag == 2" type="danger">重修</el-tag>
+							</template>
+                        </el-table-column>
+
+                        <el-table-column fixed="right" label="操作" width="60">
+                            <template slot-scope="scope">
+								<div class="text-center">
+									<el-button style="padding:5px 0;margin:0 auto" @click="" type="text" size="small">查看</el-button>
+								</div>
+							</template>
+                        </el-table-column>
+                    </el-table>
+                </div>
+
+                <div v-if="index == '2-1'">
+                    <el-table :data="data" style="width: 100%" border>
+                        <el-table-column label="教工id" width="155" :show-overflow-tooltip="true">
+                            <template slot-scope="scope">
+								{{scope.row.teacherId}}
+							</template>
+                        </el-table-column>
+
+                        <el-table-column label="教工姓名" width="155" :show-overflow-tooltip="true">
+                            <template slot-scope="scope">
+								{{scope.row.teacherName}}
+							</template>
+                        </el-table-column>
+
+                        <el-table-column label="邮箱地址" width="155" :show-overflow-tooltip="true">
+                            <template slot-scope="scope">
+								{{scope.row.email}}
+							</template>
+                        </el-table-column>
+
+                        <el-table-column label="院系编号" width="100" :show-overflow-tooltip="true">
+                            <template slot-scope="scope">
+								{{scope.row.departmentId}}
+							</template>
+                        </el-table-column>
+
+                        <el-table-column label="院系名称" width="155" :show-overflow-tooltip="true">
+                            <template slot-scope="scope">
+								{{scope.row.departmentName}}
+							</template>
+                        </el-table-column>
+
+                        <el-table-column label="联系方式" width="100" :show-overflow-tooltip="true">
+                            <template slot-scope="scope">
+								{{scope.row.content}}
+							</template>
+                        </el-table-column>
+
+                        <el-table-column label="出生日期" width="120" :show-overflow-tooltip="true">
+                            <template slot-scope="scope">
+								{{scope.row.both}}
+							</template>
+                        </el-table-column>
+
+                        <el-table-column label="性别" width="100" :show-overflow-tooltip="true">
+                            <template slot-scope="scope">
+								{{scope.row.gender}}
+							</template>
+                        </el-table-column>
+
+                        <el-table-column label="身份证号码" width="100" :show-overflow-tooltip="true">
+                            <template slot-scope="scope">
+								{{scope.row.idCard}}
+							</template>
+                        </el-table-column>
+
+                        <el-table-column label="联系地址" :show-overflow-tooltip="true">
+                            <template slot-scope="scope">
+								{{scope.row.address}}
+							</template>
+                        </el-table-column>
+
+                        <el-table-column label="教工照片" width="100">
+                            <template slot-scope="scope">
+                                <div class="mx-auto text-center">
+                                    <el-image v-if="scope.row.teacherImg != null && scope.row.teacherImg.length != 0" :preview-src-list="[scope.row.teacherImg]"
+                                    style="width: 100%;height:50px;" :src="scope.row.teacherImg" fit="scale-down">
+                                    </el-image>
+                                    <span v-else> 未录入照片 </span>
+                                </div>
+                                </template>
+                        </el-table-column>
+
+                        <el-table-column label="用户组" width="120" :show-overflow-tooltip="true">
+                            <template slot-scope="scope">
+                                <el-tag type="success" v-if="scope.row.permission == 0">超级管理员</el-tag>
+                                <el-tag type="warning" v-else-if="scope.row.permission == 1">管理员</el-tag>
+                                <el-tag v-else-if="scope.row.permission == 2">普通教工</el-tag>
+                                <el-tag type="danger" v-else>未知</el-tag>
+                            </template>
+                        </el-table-column>
+
+                        <el-table-column label="账号状态" :show-overflow-tooltip="true">
+                            <template slot-scope="scope">
+                                <el-tag type="success" v-if="scope.row.active == 1">启用</el-tag>
+                                <el-tag type="danger" v-if="scope.row.active == 0">未启用</el-tag>
+                            </template>
                         </el-table-column>
 
                         <el-table-column fixed="right" label="操作" width="60">

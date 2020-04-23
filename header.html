@@ -79,7 +79,7 @@
 </head>
 
 <body>
-    <div id="header">
+    <div id="header" v-cloak>
         <el-row>
             <el-col :sm="4" class="text-center">
                 <img style="max-width: 120px;max-height: 50px;text-align: center;" src="Storage/global/Logo.png" alt="logo" class="img-fluid">
@@ -90,9 +90,9 @@
                 </el-menu>
             </el-col>
             <el-col :md="2" :xs="24">
-                <div style="text-align: center;position: relative;z-index: 999999;height:61px" class="mx-auto">
+                <div style="text-align: center;position: relative;height:61px" class="mx-auto">
                     <div v-if="login">
-                        <el-menu style="position: absolute;z-index: 99999;width: 100%;">
+                        <el-menu style="position: absolute;z-index: 99;width: 100%;">
                             <el-submenu index="100">
                                 <template slot="title">
                             <div style="overflow-x: hidden;text-overflow: ellipsis;">
