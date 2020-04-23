@@ -90,15 +90,15 @@
                 </el-menu>
             </el-col>
             <el-col :md="2" :xs="24">
-                <div style="text-align: center;position: relative;z-index: 999999;" class="mx-auto">
+                <div style="text-align: center;position: relative;z-index: 999999;height:61px" class="mx-auto">
                     <div v-if="login">
                         <el-menu style="position: absolute;z-index: 99999;width: 100%;">
                             <el-submenu index="100">
                                 <template slot="title">
-                            <div style="overflow-x: hidden;text-overflow: ellipsis;">
-                                <span>{{userName}}</span>
-                            </div>
-                        </template>
+                                    <div style="overflow-x: hidden;text-overflow: ellipsis;">
+                                        <span>{{userName}}</span>
+                                    </div>
+                                </template>
                                 <el-menu-item index="100-1" style="min-width:100%;padding: 0;position: relative;z-index: 99999;">个人中心</el-menu-item>
                                 <el-menu-item @click="logout()" index="100-2" style="min-width:100%;padding: 0;position: relative;z-index: 99999;">退出登录</el-menu-item>
                             </el-submenu>
@@ -135,16 +135,16 @@
                         if (res.data.loginStatus) {
                             axios.post('./System/Core/API/Function/GetIdentity/index.php', Qs.stringify({}), ).then(function(res) {
                                 header.identity = res.data.identity
-                            })
-                            axios.post('./System/Core/API/Function/GetUserInfo/index.php', Qs.stringify({}), ).then(function(res) {
-                                switch (header.identity) {
-                                    case 'Student':
-                                        header.userName = res.data.slice(1)[0].studentName
-                                        break;
-                                    case 'Teacher':
-                                        header.userName = res.data.slice(1)[0].teacherName
-                                        break;
-                                }
+                                axios.post('./System/Core/API/Function/GetUserInfo/index.php', Qs.stringify({}), ).then(function(res) {
+                                    switch (header.identity) {
+                                        case 'Student':
+                                            header.userName = res.data.slice(1)[0].studentName
+                                            break;
+                                        case 'Teacher':
+                                            header.userName = res.data.slice(1)[0].teacherName
+                                            break;
+                                    }
+                                })
                             })
                         }
                     }
@@ -229,8 +229,8 @@
                             <el-menu-item index="1-4">分数登记</el-menu-item>
                         </el-menu-item-group>
                         <el-menu-item-group title="管理员功能" v-if="permission == '0' || permission == '1' ">
-                            <el-menu-item index="1-4">学生信息管理</el-menu-item>
-                            <el-menu-item index="1-5">分数信息管理</el-menu-item>
+                            <el-menu-item index="1-5">学生信息管理</el-menu-item>
+                            <el-menu-item index="1-6">分数信息管理</el-menu-item>
                         </el-menu-item-group>
                     </el-submenu>
 
@@ -288,6 +288,10 @@
                         '1-2': './System/Core/API/Class/GetClass/index.php',
                         '1-3': './System/Core/API/Management/GetStudent/index.php',
                         '1-4': './System/Core/API/Score/GetScore/index.php',
+                        '1-5': './System/Core/API/Management/GetStudent/index.php',
+                        '1-6': './System/Core/API/Score/GetScore/index.php',
+
+                        '2-1': './System/Core/API/Management/GetTeacher/index.php',
                     },
                     dataModel: {
                         '1-1': {
@@ -300,7 +304,94 @@
                             startTime: undefined,
                             endTime: undefined,
                             public: undefined
-                        }
+                        },
+                        '1-2': {
+                            departmentId: undefined,
+                            departmentName: undefined,
+                            majorId: undefined,
+                            majorName: undefined,
+                            grade: undefined,
+
+                            years: undefined,
+                            class: undefined,
+                            classId: undefined,
+                            studentName: undefined,
+                        },
+                        '1-3': {
+                            studentName: undefined,
+                            studentId: undefined,
+                            gender: undefined,
+                            departmentId: undefined,
+                            departmentName: undefined,
+                            majorId: undefined,
+                            majorName: undefined,
+                            contact: undefined,
+
+                            years: undefined,
+                            class: undefined,
+                            classId: undefined,
+                            seat: undefined,
+                            idCard: undefined,
+                            address: undefined,
+                            active: undefined
+                        },
+                        '1-4': {
+                            courseId: undefined,
+                            courseName: undefined,
+                            teacherId: undefined,
+                            teacherName: undefined,
+                            studentId: undefined,
+                            studentName: undefined,
+
+                            score: undefined,
+                            flag: undefined,
+                        },
+                        '1-5': {
+                            studentName: undefined,
+                            studentId: undefined,
+                            gender: undefined,
+                            departmentId: undefined,
+                            departmentName: undefined,
+                            majorId: undefined,
+                            majorName: undefined,
+                            contact: undefined,
+
+                            years: undefined,
+                            class: undefined,
+                            classId: undefined,
+                            seat: undefined,
+                            idCard: undefined,
+                            address: undefined,
+                            active: undefined
+                        },
+                        '1-6': {
+                            courseId: undefined,
+                            courseName: undefined,
+                            teacherId: undefined,
+                            teacherName: undefined,
+                            studentId: undefined,
+                            studentName: undefined,
+
+                            score: undefined,
+                            flag: undefined,
+                        },
+
+                        '2-1': {
+                            teacherName: undefined,
+                            departmentId: undefined,
+                            departmentName: undefined,
+                            gender: undefined,
+                            contact: undefined,
+                            idCard: undefined,
+                            both: undefined,
+                            permission: undefined,
+                            address: undefined,
+                            active: undefined,
+                            email: undefined
+                        },
+
+
+
                     },
 
                     classFilter: {},
