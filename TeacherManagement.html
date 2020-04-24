@@ -248,19 +248,22 @@
                         </el-menu-item-group>
                     </el-submenu>
 
-                    <el-menu-item index="3">
+                    <el-menu-item index="3" v-if="permission == '0'">
                         <i class="el-icon-notebook-1"></i>
                         <span slot="title">院系管理</span>
                     </el-menu-item>
-                    <el-menu-item index="4">
+
+                    <el-menu-item index="4" v-if="permission == '0'">
                         <i class="el-icon-notebook-2"></i>
                         <span slot="title">专业管理</span>
                     </el-menu-item>
-                    <el-menu-item index="5">
+
+                    <el-menu-item index="5" v-if="permission == '0'">
                         <i class="el-icon-office-building"></i>
                         <span slot="title">年级管理</span>
                     </el-menu-item>
-                    <el-menu-item index="6">
+
+                    <el-menu-item index="6" v-if="permission == '0'">
                         <i class="el-icon-school"></i>
                         <span slot="title">班级管理</span>
                     </el-menu-item>
@@ -804,6 +807,195 @@
                     </el-table>
                 </div>
 
+                <div v-if="index == '3'">
+                    <el-table :data="data" style="width: 100%" border>
+                        <el-table-column label="院系编号" width="155" :show-overflow-tooltip="true">
+                            <template slot-scope="scope">
+								{{scope.row.departmentId}}
+							</template>
+                        </el-table-column>
+
+                        <el-table-column label="院系名称" width="155" :show-overflow-tooltip="true">
+                            <template slot-scope="scope">
+								{{scope.row.departmentName}}
+							</template>
+                        </el-table-column>
+
+                        <el-table-column label="状态" :show-overflow-tooltip="true">
+                            <template slot-scope="scope">
+                                <el-tag v-if="scope.row.active == 1" type="success">启用</el-tag>
+                                <el-tag v-if="scope.row.active == 0" type="danger">未启用</el-tag>
+							</template>
+                        </el-table-column>
+
+                        <el-table-column fixed="right" label="操作" width="60">
+                            <template slot-scope="scope">
+								<div class="text-center">
+									<el-button style="padding:5px 0;margin:0 auto" @click="" type="text" size="small">查看</el-button>
+								</div>
+							</template>
+                        </el-table-column>
+                    </el-table>
+                </div>
+
+                <div v-if="index == '4'">
+                    <el-table :data="data" style="width: 100%" border>
+                        <el-table-column label="院系编号" width="155" :show-overflow-tooltip="true">
+                            <template slot-scope="scope">
+								{{scope.row.departmentId}}
+							</template>
+                        </el-table-column>
+
+                        <el-table-column label="院系名称" width="155" :show-overflow-tooltip="true">
+                            <template slot-scope="scope">
+								{{scope.row.departmentName}}
+							</template>
+                        </el-table-column>
+
+                        <el-table-column label="专业编号" width="155" :show-overflow-tooltip="true">
+                            <template slot-scope="scope">
+								{{scope.row.majorId}}
+							</template>
+                        </el-table-column>
+
+                        <el-table-column label="专业名称" width="155" :show-overflow-tooltip="true">
+                            <template slot-scope="scope">
+								{{scope.row.majorName}}
+							</template>
+                        </el-table-column>
+
+                        <el-table-column label="状态" :show-overflow-tooltip="true">
+                            <template slot-scope="scope">
+                                <el-tag v-if="scope.row.active == 1" type="success">启用</el-tag>
+                                <el-tag v-if="scope.row.active == 0" type="danger">未启用</el-tag>
+							</template>
+                        </el-table-column>
+
+                        <el-table-column fixed="right" label="操作" width="60">
+                            <template slot-scope="scope">
+								<div class="text-center">
+									<el-button style="padding:5px 0;margin:0 auto" @click="" type="text" size="small">查看</el-button>
+								</div>
+							</template>
+                        </el-table-column>
+                    </el-table>
+                </div>
+
+                <div v-if="index == '5'">
+                    <el-table :data="data" style="width: 100%" border>
+                        <el-table-column label="年级" width="100" :show-overflow-tooltip="true">
+                            <template slot-scope="scope">
+								{{scope.row.grade}}级
+							</template>
+                        </el-table-column>
+
+                        <el-table-column label="院系编号" width="155" :show-overflow-tooltip="true">
+                            <template slot-scope="scope">
+								{{scope.row.departmentId}}
+							</template>
+                        </el-table-column>
+
+                        <el-table-column label="院系名称" width="155" :show-overflow-tooltip="true">
+                            <template slot-scope="scope">
+								{{scope.row.departmentName}}
+							</template>
+                        </el-table-column>
+
+                        <el-table-column label="专业编号" width="155" :show-overflow-tooltip="true">
+                            <template slot-scope="scope">
+								{{scope.row.majorId}}
+							</template>
+                        </el-table-column>
+
+                        <el-table-column label="专业名称" width="155" :show-overflow-tooltip="true">
+                            <template slot-scope="scope">
+								{{scope.row.majorName}}
+							</template>
+                        </el-table-column>
+
+                        <el-table-column label="最大班级数量" :show-overflow-tooltip="true">
+                            <template slot-scope="scope">
+								{{scope.row.classNum}}
+							</template>
+                        </el-table-column>
+
+                        <el-table-column fixed="right" label="操作" width="60">
+                            <template slot-scope="scope">
+								<div class="text-center">
+									<el-button style="padding:5px 0;margin:0 auto" @click="" type="text" size="small">查看</el-button>
+								</div>
+							</template>
+                        </el-table-column>
+                    </el-table>
+                </div>
+
+                <div v-if="index == '6'">
+                    <el-table :data="data" style="width: 100%" border>
+                        <el-table-column label="年级" width="100" :show-overflow-tooltip="true">
+                            <template slot-scope="scope">
+								{{scope.row.grade}}级
+							</template>
+                        </el-table-column>
+
+                        <el-table-column label="学制" width="100" :show-overflow-tooltip="true">
+                            <template slot-scope="scope">
+								{{scope.row.years}}年
+							</template>
+                        </el-table-column>
+
+                        <el-table-column label="院系编号" width="155" :show-overflow-tooltip="true">
+                            <template slot-scope="scope">
+								{{scope.row.departmentId}}
+							</template>
+                        </el-table-column>
+
+                        <el-table-column label="院系名称" width="155" :show-overflow-tooltip="true">
+                            <template slot-scope="scope">
+								{{scope.row.departmentName}}
+							</template>
+                        </el-table-column>
+
+                        <el-table-column label="专业编号" width="155" :show-overflow-tooltip="true">
+                            <template slot-scope="scope">
+								{{scope.row.majorId}}
+							</template>
+                        </el-table-column>
+
+                        <el-table-column label="专业名称" width="155" :show-overflow-tooltip="true">
+                            <template slot-scope="scope">
+								{{scope.row.majorName}}
+							</template>
+                        </el-table-column>
+
+                        <el-table-column label="班级编号" :show-overflow-tooltip="true">
+                            <template slot-scope="scope">
+								{{scope.row.classId}}
+							</template>
+                        </el-table-column>
+
+                        <el-table-column label="班号" :show-overflow-tooltip="true">
+                            <template slot-scope="scope">
+								{{scope.row.class}}班
+							</template>
+                        </el-table-column>
+
+                        <el-table-column label="学生数量" :show-overflow-tooltip="true">
+                            <template slot-scope="scope">
+								{{scope.row.studentNum}}人
+							</template>
+                        </el-table-column>
+
+                        <el-table-column fixed="right" label="操作" width="60">
+                            <template slot-scope="scope">
+								<div class="text-center">
+									<el-button style="padding:5px 0;margin:0 auto" @click="" type="text" size="small">查看</el-button>
+								</div>
+							</template>
+                        </el-table-column>
+                    </el-table>
+                </div>
+
+
                 <el-pagination @size-change="(v)=>{num = v ;getData() }" @current-change="(v)=>{getData()}" :total="total" :current-page.sync="page" :page-sizes="[10,20,50,100,200,500,1000]" :page-size="num" layout="total,sizes,prev, pager, next, jumper">
                 </el-pagination>
 
@@ -835,6 +1027,8 @@
                     num: 10,
                     total: 0,
 
+                    arg: undefined,
+
 
                     dataChannel: {
                         '1-1': './System/Core/API/Course/GetCourse/index.php',
@@ -845,6 +1039,14 @@
                         '1-6': './System/Core/API/Score/GetScore/index.php',
 
                         '2-1': './System/Core/API/Management/GetTeacher/index.php',
+
+                        '3': './System/Core/API/Department/GetDepartment/index.php',
+
+                        '4': './System/Core/API/Major/GetMajor/index.php',
+
+                        '5': './System/Core/API/Grade/GetGrade/index.php',
+
+                        '6': './System/Core/API/Class/GetClass/index.php',
                     },
                     dataModel: {
                         '1-1': {
@@ -943,7 +1145,40 @@
                             email: undefined
                         },
 
+                        '3': {
+                            departmentId: undefined,
+                            departmentName: undefined,
+                            active: undefined
+                        },
 
+                        '4': {
+                            departmentId: undefined,
+                            departmentName: undefined,
+                            majorId: undefined,
+                            majorName: undefined,
+                            active: undefined
+                        },
+
+                        '5': {
+                            departmentId: undefined,
+                            departmentName: undefined,
+                            majorId: undefined,
+                            majorName: undefined,
+                            grade: undefined,
+                            classNum: undefined
+                        },
+
+                        '6': {
+                            departmentId: undefined,
+                            departmentName: undefined,
+                            majorId: undefined,
+                            majorName: undefined,
+                            grade: undefined,
+                            years: undefined,
+                            class: undefined,
+                            classId: undefined,
+                            studentNum: undefined
+                        },
 
                     },
 
@@ -1011,7 +1246,8 @@
                             ),
                             "filter": JSON.stringify({
                                 "page": management.page,
-                                "num": management.num
+                                "num": management.num,
+                                "arg": management.arg
                             })
                         }))
                         .then(function(res) {
