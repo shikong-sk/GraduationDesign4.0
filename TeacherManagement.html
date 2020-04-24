@@ -1199,9 +1199,16 @@
                     }
                 },
                 index(n, o) {
-                    this.getData()
+                    Object.keys(management.dataModel[o])
+                        .forEach((k) => {
+                            management.dataModel[o][k] = undefined;
+                        })
+
                     this.page = 1
                     this.num = 10
+                    this.arg = undefined
+
+                    this.getData()
                 }
             },
             mounted() {
