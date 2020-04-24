@@ -272,6 +272,18 @@
             <el-col :xs="24 - nav_Menu_xs == 0?24:24 - nav_Menu_xs" :sm="24 - nav_Menu_sm" :md="24 - nav_Menu_md">
 
                 <div v-if="index == '1-1'">
+
+                    <el-row>
+                        <el-col :xs="4" :sm="4" :md="4">
+                            <el-input v-model="dataModel['1-1'].courseName" placeholder="课程名称" clearable @clear="()=>{dataModel['1-1'].courseName == undefined}">
+                            </el-input>
+                        </el-col>
+
+                        <el-col :xs="4" :sm="4" :md="4">
+                            <el-button @click="()=>{getData()}">搜索</el-button>
+                        </el-col>
+                    </el-row>
+
                     <el-table :data="data" style="width: 100%" border>
                         <el-table-column label="课程id" width="155" :show-overflow-tooltip="true">
                             <template slot-scope="scope">
@@ -1247,6 +1259,15 @@
             },
             methods: {
                 getData() {
+
+                    Object.keys(management.dataModel[management.index])
+                        .forEach((k) => {
+                            if (management.dataModel[management.index][k] == null || management.dataModel[management.index][k] == 0) {
+                                // management.dataModel[management.index][k] = undefined;
+                                management.$set(management.dataModel[management.index], k, undefined)
+                            }
+                        })
+
                     axios.post(management.dataChannel[management.index], Qs.stringify({
                             "data": JSON.stringify(
                                 management.dataModel[management.index]
