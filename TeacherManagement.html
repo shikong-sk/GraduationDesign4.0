@@ -44,6 +44,10 @@
             color: #F56C6C !important;
         }
         
+        body .el-table th.gutter {
+            display: table-cell!important;
+        }
+        
         [v-cloak] {
             display: none;
         }
@@ -252,6 +256,14 @@
                         <i class="el-icon-notebook-2"></i>
                         <span slot="title">专业管理</span>
                     </el-menu-item>
+                    <el-menu-item index="5">
+                        <i class="el-icon-office-building"></i>
+                        <span slot="title">年级管理</span>
+                    </el-menu-item>
+                    <el-menu-item index="6">
+                        <i class="el-icon-school"></i>
+                        <span slot="title">班级管理</span>
+                    </el-menu-item>
                 </el-menu>
             </el-col>
             <el-col :xs="24 - nav_Menu_xs == 0?24:24 - nav_Menu_xs" :sm="24 - nav_Menu_sm" :md="24 - nav_Menu_md">
@@ -427,10 +439,27 @@
 							</template>
                         </el-table-column>
 
+                        <el-table-column label="座号" width="155" :show-overflow-tooltip="true">
+                            <template slot-scope="scope">
+                                {{scope.row.seat}}
+							</template>
+                        </el-table-column>
+
                         <el-table-column label="联系方式" width="155" :show-overflow-tooltip="true">
                             <template slot-scope="scope">
                                 {{scope.row.contact}}
 							</template>
+                        </el-table-column>
+
+                        <el-table-column label="学生照片" width="100">
+                            <template slot-scope="scope">
+                                <div class="mx-auto text-center">
+                                    <el-image v-if="scope.row.studentImg != null && scope.row.studentImg.length != 0" :preview-src-list="[scope.row.studentImg]"
+                                    style="width: 100%;height:50px;" :src="scope.row.studentImg" fit="scale-down">
+                                    </el-image>
+                                    <span v-else> 未录入照片 </span>
+                                </div>
+                                </template>
                         </el-table-column>
 
                         <el-table-column label="账号状态" width="100" :show-overflow-tooltip="true">
@@ -467,6 +496,12 @@
                         <el-table-column label="课程id" width="155" :show-overflow-tooltip="true">
                             <template slot-scope="scope">
 								{{scope.row.courseId}}
+							</template>
+                        </el-table-column>
+
+                        <el-table-column label="课程名称" width="155" :show-overflow-tooltip="true">
+                            <template slot-scope="scope">
+								{{scope.row.courseName}}
 							</template>
                         </el-table-column>
 
@@ -556,10 +591,39 @@
 							</template>
                         </el-table-column>
 
+                        <el-table-column label="座号" width="155" :show-overflow-tooltip="true">
+                            <template slot-scope="scope">
+                                {{scope.row.seat}}
+							</template>
+                        </el-table-column>
+
                         <el-table-column label="联系方式" width="155" :show-overflow-tooltip="true">
                             <template slot-scope="scope">
                                 {{scope.row.contact}}
 							</template>
+                        </el-table-column>
+
+                        <el-table-column label="联系地址" width="155" :show-overflow-tooltip="true">
+                            <template slot-scope="scope">
+                                {{scope.row.address}}
+							</template>
+                        </el-table-column>
+
+                        <el-table-column label="身份证号码" width="180" :show-overflow-tooltip="true">
+                            <template slot-scope="scope">
+                                {{scope.row.idCard}}
+							</template>
+                        </el-table-column>
+
+                        <el-table-column label="学生照片" width="100">
+                            <template slot-scope="scope">
+                                <div class="mx-auto text-center">
+                                    <el-image v-if="scope.row.studentImg != null && scope.row.studentImg.length != 0" :preview-src-list="[scope.row.studentImg]"
+                                    style="width: 100%;height:50px;" :src="scope.row.studentImg" fit="scale-down">
+                                    </el-image>
+                                    <span v-else> 未录入照片 </span>
+                                </div>
+                                </template>
                         </el-table-column>
 
                         <el-table-column label="账号状态" width="100" :show-overflow-tooltip="true">
@@ -596,6 +660,12 @@
                         <el-table-column label="课程id" width="155" :show-overflow-tooltip="true">
                             <template slot-scope="scope">
 								{{scope.row.courseId}}
+							</template>
+                        </el-table-column>
+
+                        <el-table-column label="课程名称" width="155" :show-overflow-tooltip="true">
+                            <template slot-scope="scope">
+								{{scope.row.courseName}}
 							</template>
                         </el-table-column>
 
