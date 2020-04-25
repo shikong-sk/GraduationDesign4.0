@@ -805,6 +805,10 @@
                         <el-col :xs="24" :sm="24" :md="24">
                             <el-button class="w-100" @click="()=>{getData()}">搜索</el-button>
                         </el-col>
+
+                        <el-col :xs="24" :sm="24" :md="24">
+                            <el-button class="w-100" @click="()=>{controller['1-5'].add = true}">添加</el-button>
+                        </el-col>
                     </el-row>
 
                     <el-table :data="data" style="width: 100%" border>
@@ -907,6 +911,53 @@
                         </el-table-column>
                     </el-table>
                 </div>
+
+                <el-dialog title="添加学生信息" :visible.sync="controller['1-5'].add" :show-close="true" :close-on-press-escape="true" :close-on-click-modal="false" :fullscreen="true">
+                    <el-row>
+                        <el-row style="vertical-align: middle;">
+
+                            <el-col :xs="24" :sm="12" :md="6">
+                                <el-form label-position="left" inline class="table-expand">
+                                    <el-form-item label="学生姓名">
+                                        <el-input class="w-100" v-model="addModel['1-5'].studentName" clearable></el-input>
+                                    </el-form-item>
+                                </el-form>
+                            </el-col>
+
+                            <el-col :xs="24" :sm="12" :md="6">
+                                <el-form label-position="left" inline class="table-expand">
+                                    <el-form-item label="性别">
+                                        <el-select class="w-100" filterable placeholder="出入标识" v-model="addModel['1-5'].gender" clearable>
+                                            <el-option label="男" value="男"></el-option>
+                                            <el-option label="女" value="女"></el-option>
+                                        </el-select>
+                                    </el-form-item>
+                                </el-form>
+                            </el-col>
+
+                            <el-col :xs="24" :sm="12" :md="6">
+                                <el-form label-position="left" inline class="table-expand">
+                                    <el-form-item label="车辆照片">
+                                        <el-image v-if="addModel['1-5'].studentImg != null && addModel['1-5'].studentImg != ''" :preview-src-list="[addModel['1-5'].studentImg]
+                                            " style="width: 10rem;height:10rem;" :src="addModel['1-5'].studentImg == undefined?'./Storage/undefined.jpg':addModel['1-5'].studentImg " fit="scale-down">
+                                        </el-image>
+                                        <span v-else> 未录入照片 </span>
+                                        <br>
+                                        <el-button @click="()=>{studentImgUpload()}" type="mini">上传车辆照片</el-button>
+                                    </el-form-item>
+                                </el-form>
+                            </el-col>
+
+                            <input id="studentImgUpload" style="display: none;" class="btn" type="file" onchange="management.imgAdd(this,'studentImg')" accept="image/png,image/gif,image/jpeg" />
+
+                        </el-row>
+                    </el-row>
+
+                    <span slot="footer" class="dialog-footer">
+                            <el-button @click="()=>{getData();controller['1-5'].add = false}">取 消</el-button>
+                            <el-button type="primary" @click="()=>{add(data)}">确 定</el-button>
+                    </span>
+                </el-dialog>
 
                 <div v-if="index == '1-6'">
                     <el-row>
@@ -1547,6 +1598,35 @@
 
                         '6': './System/Core/API/Class/GetClass/index.php',
                     },
+
+                    controller: {
+                        '1-5': {
+                            add: false
+                        }
+                    },
+                    addModel: {
+                        '1-5': {
+                            studentName: undefined,
+                            studentId: undefined,
+                            gender: undefined,
+                            departmentId: undefined,
+                            departmentName: undefined,
+                            majorId: undefined,
+                            majorName: undefined,
+                            contact: undefined,
+
+                            years: undefined,
+                            class: undefined,
+                            classId: undefined,
+                            seat: undefined,
+                            idCard: undefined,
+                            address: undefined,
+                            active: undefined,
+
+                            studentImg: undefined,
+                        },
+                    },
+
                     dataModel: {
                         '1-1': {
                             courseId: undefined,
@@ -1745,6 +1825,25 @@
                 })
             },
             methods: {
+                studentImgUpload() {
+                    $("#studentImgUpload").click()
+                },
+                async imgAdd(img, x) {
+                    // console.log(img, x)
+                    // 生成一个文件读取的对象
+                    // console.log(img.files[0])
+                    reader = new FileReader();
+                    reader.onload = function(ev) {
+                            // base64码
+                            var imgFile = ev.target.result; //或e.target都是一样的
+                            // console.log(imgFile)
+                            // data[x] = imgFile
+                            // management.addModel[management.index][x] = imgFile
+                            management.$set(management.addModel[management.index], x, imgFile)
+                        }
+                        //发起异步读取文件请求，读取结果为data:url的字符串形式，
+                    await reader.readAsDataURL(img.files[0])
+                },
                 getData() {
 
                     Object.keys(management.dataModel[management.index])
