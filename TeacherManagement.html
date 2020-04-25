@@ -219,7 +219,7 @@
     <div id="management" v-cloak>
         <el-row>
             <el-col :xs="nav_Menu_xs" :sm="nav_Menu_sm" :md="nav_Menu_md">
-                <el-menu style="overflow-x:hidden" :default-active="index" :collapse="collapse" @select="(i,path)=>{this.$set(this,'index',i);log(path)}" @open="" @close="">
+                <el-menu :unique-opened="true" style="overflow-x:hidden" :default-active="index" :collapse="collapse" @select="(i,path)=>{this.$set(this,'index',i);log(path)}" @open="" @close="">
                     <el-button type="text" @click="()=>{collapse = !collapse}" :icon="collapse?'el-icon-s-unfold':'el-icon-s-fold'" class="w-100">
                         {{collapse?'':''}}
                     </el-button>
@@ -738,6 +738,75 @@
                 </div>
 
                 <div v-if="index == '1-5'">
+                    <el-row>
+                        <el-col :xs="12" :sm="6" :md="6">
+                            <el-input class="w-100" v-model="dataModel[index].studentId" placeholder="学号" clearable @clear="()=>{dataModel[index].studentId == undefined}">
+                            </el-input>
+                        </el-col>
+
+                        <el-col :xs="12" :sm="6" :md="6">
+                            <el-input class="w-100" v-model="dataModel[index].studentName" placeholder="学生姓名" clearable @clear="()=>{dataModel[index].studentName == undefined}">
+                            </el-input>
+                        </el-col>
+
+                        <el-col :xs="12" :sm="6" :md="6">
+                            <el-select class="w-100" v-model="dataModel[index].gender" placeholder="性别" clearable @clear="()=>{dataModel[index].gender == undefined}">
+                                <el-option label="男" value="男">
+                                </el-option>
+                                <el-option label="女" value="女">
+                                </el-option>
+                            </el-select>
+                        </el-col>
+
+                        <el-col :xs="12" :sm="6" :md="6">
+                            <el-input class="w-100" v-model="dataModel[index].departmentName" placeholder="院系名称" clearable @clear="()=>{dataModel[index].departmentName == undefined}">
+                            </el-input>
+                        </el-col>
+
+                        <el-col :xs="12" :sm="6" :md="6">
+                            <el-input class="w-100" v-model="dataModel[index].majorName" placeholder="专业名称" clearable @clear="()=>{dataModel[index].majorName == undefined}">
+                            </el-input>
+                        </el-col>
+
+                        <el-col :xs="6" :sm="3" :md="3">
+                            <el-input class="w-100" v-model="dataModel[index].grade" placeholder="年级" clearable @clear="()=>{dataModel[index].grade == undefined}">
+                            </el-input>
+                        </el-col>
+
+                        <el-col :xs="6" :sm="3" :md="3">
+                            <el-input class="w-100" v-model="dataModel[index].years" placeholder="学制" clearable @clear="()=>{dataModel[index].years == undefined}">
+                            </el-input>
+                        </el-col>
+
+                        <el-col :xs="12" :sm="6" :md="6">
+                            <el-input class="w-100" v-model="dataModel[index].classId" placeholder="班级编号" clearable @clear="()=>{dataModel[index].classId == undefined}">
+                            </el-input>
+                        </el-col>
+
+                        <el-col :xs="12" :sm="6" :md="6">
+                            <el-input class="w-100" v-model="dataModel[index].seat" placeholder="座号" clearable @clear="()=>{dataModel[index].seat == undefined}">
+                            </el-input>
+                        </el-col>
+
+                        <el-col :xs="12" :sm="12" :md="12">
+                            <el-input class="w-100" v-model="dataModel[index].contact" placeholder="联系方式" clearable @clear="()=>{dataModel[index].contact == undefined}">
+                            </el-input>
+                        </el-col>
+
+                        <el-col :xs="12" :sm="12" :md="12">
+                            <el-select class="w-100" v-model="dataModel[index].active" placeholder="账号状态" clearable @clear="()=>{dataModel[index].active == undefined}">
+                                <el-option label="已激活" value="1">
+                                </el-option>
+                                <el-option label="未激活" value="0">
+                                </el-option>
+                            </el-select>
+                        </el-col>
+
+                        <el-col :xs="24" :sm="24" :md="24">
+                            <el-button class="w-100" @click="()=>{getData()}">搜索</el-button>
+                        </el-col>
+                    </el-row>
+
                     <el-table :data="data" style="width: 100%" border>
                         <el-table-column label="学号" width="155" :show-overflow-tooltip="true">
                             <template slot-scope="scope">
@@ -840,6 +909,54 @@
                 </div>
 
                 <div v-if="index == '1-6'">
+                    <el-row>
+                        <!-- <el-col :xs="12" :sm="6" :md="6">
+                            <el-input class="w-100" v-model="dataModel[index].courseId" placeholder="课程编号" clearable @clear="()=>{dataModel[index].courseId == undefined}">
+                            </el-input>
+                        </el-col> -->
+
+                        <el-col :xs="12" :sm="6" :md="6">
+                            <el-input class="w-100" v-model="dataModel[index].courseName" placeholder="课程名称" clearable @clear="()=>{dataModel[index].courseName == undefined}">
+                            </el-input>
+                        </el-col>
+
+                        <el-col :xs="12" :sm="6" :md="6">
+                            <el-input class="w-100" v-model="dataModel[index].studentId" placeholder="学号" clearable @clear="()=>{dataModel[index].studentId == undefined}">
+                            </el-input>
+                        </el-col>
+
+                        <el-col :xs="12" :sm="6" :md="6">
+                            <el-input class="w-100" v-model="dataModel[index].studentName" placeholder="学生姓名" clearable @clear="()=>{dataModel[index].studentName == undefined}">
+                            </el-input>
+                        </el-col>
+
+                        <!-- <el-col :xs="12" :sm="6" :md="6">
+                            <el-input class="w-100" v-model="dataModel[index].teacherId" placeholder="教工id" clearable @clear="()=>{dataModel[index].teacherId == undefined}">
+                            </el-input>
+                        </el-col> -->
+
+                        <el-col :xs="12" :sm="6" :md="6">
+                            <el-input class="w-100" v-model="dataModel[index].teacherName" placeholder="教工姓名" clearable @clear="()=>{dataModel[index].teacherName == undefined}">
+                            </el-input>
+                        </el-col>
+
+
+                        <el-col :xs="24" :sm="24" :md="24">
+                            <el-select class="w-100" v-model="dataModel[index].flag" placeholder="考试类型" clearable @clear="()=>{dataModel[index].flag == undefined}">
+                                <el-option label="正考" value="0">
+                                </el-option>
+                                <el-option label="补考" value="1">
+                                </el-option>
+                                <el-option label="重修" value="2">
+                                </el-option>
+                            </el-select>
+                        </el-col>
+
+                        <el-col :xs="24" :sm="24" :md="24">
+                            <el-button class="w-100" @click="()=>{getData()}">搜索</el-button>
+                        </el-col>
+                    </el-row>
+
                     <el-table :data="data" style="width: 100%" border>
                         <el-table-column label="学号" width="155" :show-overflow-tooltip="true">
                             <template slot-scope="scope">
@@ -902,6 +1019,62 @@
                 </div>
 
                 <div v-if="index == '2-1'">
+                    <el-row>
+
+                        <el-col :xs="12" :sm="6" :md="6">
+                            <el-input class="w-100" v-model="dataModel[index].teacherName" placeholder="教工姓名" clearable @clear="()=>{dataModel[index].teacherName == undefined}">
+                            </el-input>
+                        </el-col>
+
+                        <el-col :xs="12" :sm="6" :md="6">
+                            <el-select class="w-100" v-model="dataModel[index].gender" placeholder="性别" clearable @clear="()=>{dataModel[index].gender == undefined}">
+                                <el-option label="男" value="男">
+                                </el-option>
+                                <el-option label="女" value="女">
+                                </el-option>
+                            </el-select>
+                        </el-col>
+
+                        <el-col :xs="12" :sm="6" :md="6">
+                            <el-input class="w-100" v-model="dataModel[index].departmentName" placeholder="院系名称" clearable @clear="()=>{dataModel[index].departmentName == undefined}">
+                            </el-input>
+                        </el-col>
+
+                        <el-col :xs="12" :sm="6" :md="6">
+                            <el-input class="w-100" v-model="dataModel[index].email" placeholder="邮箱地址" clearable @clear="()=>{dataModel[index].email == undefined}">
+                            </el-input>
+                        </el-col>
+
+                        <el-col :xs="12" :sm="6" :md="6">
+                            <el-input class="w-100" v-model="dataModel[index].contact" placeholder="联系方式" clearable @clear="()=>{dataModel[index].contact == undefined}">
+                            </el-input>
+                        </el-col>
+
+                        <el-col :xs="12" :sm="6" :md="6">
+                            <el-select class="w-100" v-model="dataModel[index].permission" placeholder="用户组" clearable @clear="()=>{dataModel[index].permission == undefined}">
+                                <el-option label="普通教工" value="2">
+                                </el-option>
+                                <el-option label="管理员" value="1">
+                                </el-option>
+                                <el-option label="超级管理员" value="0">
+                                </el-option>
+                            </el-select>
+                        </el-col>
+
+                        <el-col :xs="24" :sm="6" :md="6">
+                            <el-select class="w-100" v-model="dataModel[index].active" placeholder="账号状态" clearable @clear="()=>{dataModel[index].active == undefined}">
+                                <el-option label="已激活" value="1">
+                                </el-option>
+                                <el-option label="未激活" value="0">
+                                </el-option>
+                            </el-select>
+                        </el-col>
+
+                        <el-col :xs="24" :sm="24" :md="24">
+                            <el-button class="w-100" @click="()=>{getData()}">搜索</el-button>
+                        </el-col>
+                    </el-row>
+
                     <el-table :data="data" style="width: 100%" border>
                         <el-table-column label="教工id" width="155" :show-overflow-tooltip="true">
                             <template slot-scope="scope">
@@ -1001,6 +1174,32 @@
                 </div>
 
                 <div v-if="index == '3'">
+                    <el-row>
+                        <el-col :xs="12" :sm="8" :md="8">
+                            <el-input class="w-100" v-model="dataModel[index].departmentId" placeholder="院系编号" clearable @clear="()=>{dataModel[index].departmentId == undefined}">
+                            </el-input>
+                        </el-col>
+
+                        <el-col :xs="12" :sm="8" :md="8">
+                            <el-input class="w-100" v-model="dataModel[index].departmentName" placeholder="院系名称" clearable @clear="()=>{dataModel[index].departmentName == undefined}">
+                            </el-input>
+                        </el-col>
+
+
+                        <el-col :xs="24" :sm="8" :md="8">
+                            <el-select class="w-100" v-model="dataModel[index].active" placeholder="启用状态" clearable @clear="()=>{dataModel[index].active == undefined}">
+                                <el-option label="已启用" value="1">
+                                </el-option>
+                                <el-option label="未启用" value="0">
+                                </el-option>
+                            </el-select>
+                        </el-col>
+
+                        <el-col :xs="24" :sm="24" :md="24">
+                            <el-button class="w-100" @click="()=>{getData()}">搜索</el-button>
+                        </el-col>
+                    </el-row>
+
                     <el-table :data="data" style="width: 100%" border>
                         <el-table-column label="院系编号" width="155" :show-overflow-tooltip="true">
                             <template slot-scope="scope">
@@ -1032,6 +1231,41 @@
                 </div>
 
                 <div v-if="index == '4'">
+                    <el-row>
+                        <el-col :xs="12" :sm="6" :md="6">
+                            <el-input class="w-100" v-model="dataModel[index].departmentId" placeholder="院系编号" clearable @clear="()=>{dataModel[index].departmentId == undefined}">
+                            </el-input>
+                        </el-col>
+
+                        <el-col :xs="12" :sm="6" :md="6">
+                            <el-input class="w-100" v-model="dataModel[index].departmentName" placeholder="院系名称" clearable @clear="()=>{dataModel[index].departmentName == undefined}">
+                            </el-input>
+                        </el-col>
+
+                        <el-col :xs="12" :sm="6" :md="6">
+                            <el-input class="w-100" v-model="dataModel[index].majorId" placeholder="专业编号" clearable @clear="()=>{dataModel[index].majorId == undefined}">
+                            </el-input>
+                        </el-col>
+
+                        <el-col :xs="12" :sm="6" :md="6">
+                            <el-input class="w-100" v-model="dataModel[index].majorName" placeholder="专业名称" clearable @clear="()=>{dataModel[index].majorName == undefined}">
+                            </el-input>
+                        </el-col>
+
+                        <el-col :xs="24" :sm="24" :md="24">
+                            <el-select class="w-100" v-model="dataModel[index].active" placeholder="启用状态" clearable @clear="()=>{dataModel[index].active == undefined}">
+                                <el-option label="已启用" value="1">
+                                </el-option>
+                                <el-option label="未启用" value="0">
+                                </el-option>
+                            </el-select>
+                        </el-col>
+
+                        <el-col :xs="24" :sm="24" :md="24">
+                            <el-button class="w-100" @click="()=>{getData()}">搜索</el-button>
+                        </el-col>
+                    </el-row>
+
                     <el-table :data="data" style="width: 100%" border>
                         <el-table-column label="院系编号" width="155" :show-overflow-tooltip="true">
                             <template slot-scope="scope">
@@ -1075,6 +1309,37 @@
                 </div>
 
                 <div v-if="index == '5'">
+                    <el-row>
+                        <el-col :xs="12" :sm="6" :md="6">
+                            <el-input class="w-100" v-model="dataModel[index].departmentId" placeholder="院系编号" clearable @clear="()=>{dataModel[index].departmentId == undefined}">
+                            </el-input>
+                        </el-col>
+
+                        <el-col :xs="12" :sm="6" :md="6">
+                            <el-input class="w-100" v-model="dataModel[index].departmentName" placeholder="院系名称" clearable @clear="()=>{dataModel[index].departmentName == undefined}">
+                            </el-input>
+                        </el-col>
+
+                        <el-col :xs="12" :sm="6" :md="6">
+                            <el-input class="w-100" v-model="dataModel[index].majorId" placeholder="专业编号" clearable @clear="()=>{dataModel[index].majorId == undefined}">
+                            </el-input>
+                        </el-col>
+
+                        <el-col :xs="12" :sm="6" :md="6">
+                            <el-input class="w-100" v-model="dataModel[index].majorName" placeholder="专业名称" clearable @clear="()=>{dataModel[index].majorName == undefined}">
+                            </el-input>
+                        </el-col>
+
+                        <el-col :xs="24" :sm="24" :md="24">
+                            <el-input class="w-100" v-model="dataModel[index].grade" placeholder="年级" clearable @clear="()=>{dataModel[index].grade == undefined}">
+                            </el-input>
+                        </el-col>
+
+                        <el-col :xs="24" :sm="24" :md="24">
+                            <el-button class="w-100" @click="()=>{getData()}">搜索</el-button>
+                        </el-col>
+                    </el-row>
+
                     <el-table :data="data" style="width: 100%" border>
                         <el-table-column label="年级" width="100" :show-overflow-tooltip="true">
                             <template slot-scope="scope">
@@ -1123,6 +1388,47 @@
                 </div>
 
                 <div v-if="index == '6'">
+                    <el-row>
+                        <el-col :xs="6" :sm="3" :md="3">
+                            <el-input class="w-100" v-model="dataModel[index].grade" placeholder="年级" clearable @clear="()=>{dataModel[index].grade == undefined}">
+                            </el-input>
+                        </el-col>
+
+                        <el-col :xs="6" :sm="3" :md="3">
+                            <el-input class="w-100" v-model="dataModel[index].years" placeholder="学制" clearable @clear="()=>{dataModel[index].years == undefined}">
+                            </el-input>
+                        </el-col>
+
+                        <el-col :xs="12" :sm="6" :md="6">
+                            <el-input class="w-100" v-model="dataModel[index].departmentId" placeholder="院系编号" clearable @clear="()=>{dataModel[index].departmentId == undefined}">
+                            </el-input>
+                        </el-col>
+
+                        <el-col :xs="12" :sm="6" :md="6">
+                            <el-input class="w-100" v-model="dataModel[index].departmentName" placeholder="院系名称" clearable @clear="()=>{dataModel[index].departmentName == undefined}">
+                            </el-input>
+                        </el-col>
+
+                        <el-col :xs="12" :sm="6" :md="6">
+                            <el-input class="w-100" v-model="dataModel[index].majorId" placeholder="专业编号" clearable @clear="()=>{dataModel[index].majorId == undefined}">
+                            </el-input>
+                        </el-col>
+
+                        <el-col :xs="12" :sm="6" :md="6">
+                            <el-input class="w-100" v-model="dataModel[index].majorName" placeholder="专业名称" clearable @clear="()=>{dataModel[index].majorName == undefined}">
+                            </el-input>
+                        </el-col>
+
+                        <el-col :xs="12" :sm="6" :md="6">
+                            <el-input class="w-100" v-model="dataModel[index].classId" placeholder="班级编号" clearable @clear="()=>{dataModel[index].classId == undefined}">
+                            </el-input>
+                        </el-col>
+
+                        <el-col :xs="24" :sm="24" :md="24">
+                            <el-button class="w-100" @click="()=>{getData()}">搜索</el-button>
+                        </el-col>
+                    </el-row>
+
                     <el-table :data="data" style="width: 100%" border>
                         <el-table-column label="年级" width="100" :show-overflow-tooltip="true">
                             <template slot-scope="scope">
