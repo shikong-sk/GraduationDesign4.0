@@ -274,13 +274,36 @@
                 <div v-if="index == '1-1'">
 
                     <el-row>
-                        <el-col :xs="4" :sm="4" :md="4">
-                            <el-input v-model="dataModel['1-1'].courseName" placeholder="课程名称" clearable @clear="()=>{dataModel['1-1'].courseName == undefined}">
+                        <el-col :xs="6" :sm="6" :md="6">
+                            <el-input class="w-100" v-model="dataModel['1-1'].courseName" placeholder="课程名称" clearable @clear="()=>{dataModel['1-1'].courseName == undefined}">
                             </el-input>
                         </el-col>
 
-                        <el-col :xs="4" :sm="4" :md="4">
-                            <el-button @click="()=>{getData()}">搜索</el-button>
+                        <el-col :xs="6" :sm="6" :md="6">
+                            <el-input class="w-100" v-model="dataModel['1-1'].classId" placeholder="班级编号" clearable @clear="()=>{dataModel['1-1'].classId == undefined}">
+                            </el-input>
+                        </el-col>
+
+                        <el-col :xs="6" :sm="6" :md="6" v-if="permission == '0' || permission == '1'">
+                            <el-input class="w-100" v-model="dataModel['1-1'].teacherName" placeholder="教工姓名" clearable @clear="()=>{dataModel['1-1'].teacherName == undefined}">
+                            </el-input>
+                        </el-col>
+
+                        <el-col :xs="6" :sm="6" :md="6">
+                            <el-select class="w-100" v-model="dataModel['1-1'].public" placeholder="课程类别">
+                                <el-option label="普通课程" value="0">
+                                </el-option>
+                                <el-option label="公选课" value="1">
+                                </el-option>
+                            </el-select>
+                        </el-col>
+
+                        <el-col :xs="24" :sm="24" :md="24" v-if="permission == '0' || permission == '1'">
+                            <el-button class="w-100" @click="()=>{getData()}">搜索</el-button>
+                        </el-col>
+
+                        <el-col :xs="6" :sm="6" :md="6" v-else>
+                            <el-button class="w-100" @click="()=>{getData()}">搜索</el-button>
                         </el-col>
                     </el-row>
 
@@ -1062,7 +1085,7 @@
                     },
                     dataModel: {
                         '1-1': {
-                            classId: undefined,
+                            courseId: undefined,
                             courseName: undefined,
                             teacherName: undefined,
                             classId: undefined,
