@@ -955,7 +955,7 @@
 
                     <span slot="footer" class="dialog-footer">
                             <el-button @click="()=>{getData();controller['1-5'].add = false}">取 消</el-button>
-                            <el-button type="primary" @click="()=>{add(data)}">确 定</el-button>
+                            <el-button type="primary" @click="()=>{addData()}">确 定</el-button>
                     </span>
                 </el-dialog>
 
@@ -1599,6 +1599,12 @@
                         '6': './System/Core/API/Class/GetClass/index.php',
                     },
 
+                    addChannel: {
+
+                        '1-5': './System/Core/API/Management/AddStudent/index.php',
+
+                    },
+
                     controller: {
                         '1-5': {
                             add: false
@@ -1843,6 +1849,37 @@
                         }
                         //发起异步读取文件请求，读取结果为data:url的字符串形式，
                     await reader.readAsDataURL(img.files[0])
+                },
+                addData() {
+                    Object.keys(management.addModel[management.index])
+                        .forEach((k) => {
+                            if (management.addModel[management.index][k] == null || management.addModel[management.index][k].length == 0) {
+                                // management.dataModel[management.index][k] = undefined;
+                                management.$set(management.addModel[management.index], k, undefined)
+                            }
+                        })
+
+                    axios.post(management.addChannel[management.index], Qs.stringify({
+                            "data": JSON.stringify(
+                                management.addModel[management.index]
+                            ),
+                        }))
+                        .then(function(res) {
+                            if ('error' in res.data) {
+                                management.showError(res.data.error)
+                            }
+                            if ('success' in res.data) {
+                                management.showSuccess(res.data.success)
+                                management.getData()
+                            }
+                            if ('info' in res.data) {
+                                management.showInfo(res.data.info)
+                            }
+                            if ('warning' in res.data) {
+                                management.showWarning(res.data.warning)
+                            }
+                            console.log(res)
+                        })
                 },
                 getData() {
 
