@@ -551,6 +551,12 @@
 							</template>
                         </el-table-column>
 
+                        <el-table-column label="年级" width="155" :show-overflow-tooltip="true">
+                            <template slot-scope="scope">
+								{{scope.row.grade}}级
+							</template>
+                        </el-table-column>
+
                         <el-table-column label="院系名" width="155" :show-overflow-tooltip="true">
                             <template slot-scope="scope">
 								{{scope.row.departmentName}}
@@ -824,6 +830,12 @@
 							</template>
                         </el-table-column>
 
+                        <el-table-column label="年级" width="155" :show-overflow-tooltip="true">
+                            <template slot-scope="scope">
+								{{scope.row.grade}}级
+							</template>
+                        </el-table-column>
+
                         <el-table-column label="院系名" width="155" :show-overflow-tooltip="true">
                             <template slot-scope="scope">
 								{{scope.row.departmentName}}
@@ -927,7 +939,7 @@
                             <el-col :xs="24" :sm="12" :md="6">
                                 <el-form label-position="left" inline class="table-expand">
                                     <el-form-item label="性别">
-                                        <el-select class="w-100" filterable placeholder="出入标识" v-model="addModel['1-5'].gender" clearable>
+                                        <el-select class="w-100" filterable placeholder="性别" v-model="addModel['1-5'].gender" clearable>
                                             <el-option label="男" value="男"></el-option>
                                             <el-option label="女" value="女"></el-option>
                                         </el-select>
@@ -935,15 +947,17 @@
                                 </el-form>
                             </el-col>
 
+
+
                             <el-col :xs="24" :sm="12" :md="6">
                                 <el-form label-position="left" inline class="table-expand">
-                                    <el-form-item label="车辆照片">
+                                    <el-form-item label="学生照片">
                                         <el-image v-if="addModel['1-5'].studentImg != null && addModel['1-5'].studentImg != ''" :preview-src-list="[addModel['1-5'].studentImg]
                                             " style="width: 10rem;height:10rem;" :src="addModel['1-5'].studentImg == undefined?'./Storage/undefined.jpg':addModel['1-5'].studentImg " fit="scale-down">
                                         </el-image>
                                         <span v-else> 未录入照片 </span>
                                         <br>
-                                        <el-button @click="()=>{studentImgUpload()}" type="mini">上传车辆照片</el-button>
+                                        <el-button @click="()=>{studentImgUpload()}" type="mini">上传学生照片</el-button>
                                     </el-form-item>
                                 </el-form>
                             </el-col>
@@ -1621,6 +1635,7 @@
                             majorName: undefined,
                             contact: undefined,
 
+                            grade: undefined,
                             years: undefined,
                             class: undefined,
                             classId: undefined,
@@ -1667,6 +1682,7 @@
                             majorName: undefined,
                             contact: undefined,
 
+                            grade: undefined,
                             years: undefined,
                             class: undefined,
                             classId: undefined,
@@ -1696,6 +1712,7 @@
                             majorName: undefined,
                             contact: undefined,
 
+                            grade: undefined,
                             years: undefined,
                             class: undefined,
                             classId: undefined,
@@ -1768,7 +1785,9 @@
                     },
 
                     classFilter: {},
-                    studentFilter: {}
+                    studentFilter: {},
+
+                    gradeList: undefined
                 }
             },
             watch: {
@@ -1849,6 +1868,46 @@
                         }
                         //发起异步读取文件请求，读取结果为data:url的字符串形式，
                     await reader.readAsDataURL(img.files[0])
+                },
+                // async getGrade() {
+                //     let post = () => {
+                //         return new Promise(resolve => {
+                //             axios.post('./System/Core/API/Grade/GetGrade/index.php', Qs.stringify({
+                //                     "data": JSON.stringify({}),
+                //                     "filter": JSON.stringify({
+                //                         page: 1,
+                //                         num: 9999999
+                //                     }),
+                //                 }))
+                //                 .then(function(res) {
+                //                     if ('error' in res.data) {
+                //                         management.showError(res.data.error)
+                //                     } else {
+                //                         resolve(res.data)
+                //                     }
+                //                 })
+                //         })
+                //     }
+
+                //     return await post();
+
+                // },
+                getGrade() {
+                    axios.post('./System/Core/API/Grade/GetGrade/index.php', Qs.stringify({
+                            "data": JSON.stringify({}),
+                            "filter": JSON.stringify({
+                                page: 1,
+                                num: 9999999
+                            }),
+                        }))
+                        .then(function(res) {
+                            if ('error' in res.data) {
+                                management.showError(res.data.error)
+                            } else {
+                                management.$set(management, 'gradeList', res.data.slice(1))
+                            }
+                        })
+
                 },
                 addData() {
                     Object.keys(management.addModel[management.index])
