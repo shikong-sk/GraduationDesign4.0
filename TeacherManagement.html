@@ -813,7 +813,7 @@
                         </el-col>
 
                         <el-col :xs="24" :sm="24" :md="24">
-                            <el-button class="w-100" @click="()=>{controller['1-5'].add = true}">添加</el-button>
+                            <el-button class="w-100" @click="()=>{controller['1-5'].add = true ; getGrade() }">添加</el-button>
                         </el-col>
                     </el-row>
 
@@ -947,7 +947,27 @@
                                 </el-form>
                             </el-col>
 
+                            <el-col :xs="24" :sm="12" :md="6">
+                                <el-form label-position="left" inline class="table-expand">
+                                    <el-form-item label="年级">
+                                        <el-select v-model="addModel['1-5'].grade" @change="(v)=>{}" filterable placeholder="请选择年级">
+                                            <el-option v-for="(v,k) in gradeList" :key="v.grade" :label="v.grade + '级'" :value="v.grade">
+                                            </el-option>
+                                        </el-select>
+                                    </el-form-item>
+                                </el-form>
+                            </el-col>
 
+                            <el-col :xs="24" :sm="12" :md="6">
+                                <el-form label-position="left" inline class="table-expand">
+                                    <el-form-item label="院系">
+                                        <el-select v-model="addModel['1-5'].department" @change="(v)=>{}" filterable placeholder="请选择院系">
+                                            <el-option v-for="(v,k) in departmentList" :key="v.departmentId" :label="v.departmentName" :value="v.departmentId">
+                                            </el-option>
+                                        </el-select>
+                                    </el-form-item>
+                                </el-form>
+                            </el-col>
 
                             <el-col :xs="24" :sm="12" :md="6">
                                 <el-form label-position="left" inline class="table-expand">
@@ -1787,7 +1807,10 @@
                     classFilter: {},
                     studentFilter: {},
 
-                    gradeList: undefined
+                    gradeList: undefined,
+                    departmentList: undefined,
+                    majorList: undefined,
+                    classList: undefined,
                 }
             },
             watch: {
@@ -1896,6 +1919,7 @@
                     axios.post('./System/Core/API/Grade/GetGrade/index.php', Qs.stringify({
                             "data": JSON.stringify({}),
                             "filter": JSON.stringify({
+                                arg: 'distinct',
                                 page: 1,
                                 num: 9999999
                             }),
@@ -1905,6 +1929,44 @@
                                 management.showError(res.data.error)
                             } else {
                                 management.$set(management, 'gradeList', res.data.slice(1))
+                            }
+                        })
+
+                },
+                getDepartment() {
+                    axios.post('./System/Core/API/Department/GetDepartment/index.php', Qs.stringify({
+                            "data": JSON.stringify({
+                                active: 1
+                            }),
+                            "filter": JSON.stringify({
+                                page: 1,
+                                num: 9999999
+                            }),
+                        }))
+                        .then(function(res) {
+                            if ('error' in res.data) {
+                                management.showError(res.data.error)
+                            } else {
+                                management.$set(management, 'departmentList', res.data.slice(1))
+                            }
+                        })
+
+                },
+                getMajor() {
+                    axios.post('./System/Core/API/Major/GetMajor/index.php', Qs.stringify({
+                            "data": JSON.stringify({
+                                active: 1
+                            }),
+                            "filter": JSON.stringify({
+                                page: 1,
+                                num: 9999999
+                            }),
+                        }))
+                        .then(function(res) {
+                            if ('error' in res.data) {
+                                management.showError(res.data.error)
+                            } else {
+                                management.$set(management, 'majorList', res.data.slice(1))
                             }
                         })
 
