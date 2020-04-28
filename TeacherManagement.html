@@ -54,6 +54,21 @@
         [v-cloak] {
             display: none;
         }
+        
+        .table-expand {
+            font-size: 0;
+        }
+        
+        .table-expand label {
+            width: 50%;
+            color: #99a9bf;
+        }
+        
+        .table-expand .el-form-item {
+            margin-right: 0;
+            margin-bottom: 0;
+            width: 100%;
+        }
     </style>
 
     <script type="text/javascript">
@@ -917,12 +932,138 @@
                         <el-table-column fixed="right" label="操作" width="60">
                             <template slot-scope="scope">
 								<div class="text-center">
-									<el-button style="padding:5px 0;margin:0 auto" @click="" type="text" size="small">查看</el-button>
+                                    <el-button style="padding:5px 0;margin:0 auto" @click="" type="text" size="small">查看</el-button>
+                                    <el-button style="padding:5px 0;margin:0 auto" @click="(v)=>{
+                                        updateModel['1-5'] = scope.row
+                                        controller['1-5'].update = true
+                                    }" type="text" size="small">修改</el-button>
 								</div>
 							</template>
                         </el-table-column>
                     </el-table>
                 </div>
+
+                <el-dialog title="修改学生信息" v-if="controller['1-5'].update" :visible.sync="controller['1-5'].update" :show-close="true" :close-on-press-escape="true" :close-on-click-modal="false" :fullscreen="true">
+                    <el-row>
+                        <el-row style="vertical-align: middle;">
+
+                            <el-col :xs="24" :sm="12" :md="6">
+                                <el-form label-position="left" inline class="table-expand">
+                                    <el-form-item label="学生姓名">
+                                        <el-input class="w-100" v-model="updateModel['1-5'].studentName" clearable></el-input>
+                                    </el-form-item>
+                                </el-form>
+                            </el-col>
+
+                            <el-col :xs="24" :sm="12" :md="6">
+                                <el-form label-position="left" inline class="table-expand">
+                                    <el-form-item label="性别">
+                                        <el-select class="w-100" filterable placeholder="性别" v-model="updateModel['1-5'].gender" clearable>
+                                            <el-option label="男" value="男"></el-option>
+                                            <el-option label="女" value="女"></el-option>
+                                        </el-select>
+                                    </el-form-item>
+                                </el-form>
+                            </el-col>
+
+                            <el-col :xs="24" :sm="12" :md="6">
+                                <el-form label-position="left" inline class="table-expand">
+                                    <el-form-item label="身份证号码">
+                                        <el-input class="w-100" v-model="updateModel['1-5'].idCard" minlength="15" maxlength="18" clearable></el-input>
+                                    </el-form-item>
+                                </el-form>
+                            </el-col>
+
+                            <el-col :xs="24" :sm="12" :md="6">
+                                <el-form label-position="left" inline class="table-expand">
+                                    <el-form-item label="联系电话">
+                                        <el-input class="w-100" v-model="updateModel['1-5'].contact" maxlength="20" clearable></el-input>
+                                    </el-form-item>
+                                </el-form>
+                            </el-col>
+
+                            <el-col :xs="24" :sm="12" :md="6">
+                                <el-form label-position="left" inline class="table-expand">
+                                    <el-form-item label="年级">
+                                        <span>{{updateModel['1-5'].grade}} 级</span>
+                                    </el-form-item>
+                                </el-form>
+                            </el-col>
+
+                            <el-col :xs="24" :sm="12" :md="6">
+                                <el-form label-position="left" inline class="table-expand">
+                                    <el-form-item label="院系">
+                                        <span>{{updateModel['1-5'].departmentName}}</span>
+                                    </el-form-item>
+                                </el-form>
+                            </el-col>
+
+                            <el-col :xs="24" :sm="12" :md="6">
+                                <el-form label-position="left" inline class="table-expand">
+                                    <el-form-item label="专业">
+                                        <span>{{updateModel['1-5'].majorName}}</span>
+                                    </el-form-item>
+                                </el-form>
+                            </el-col>
+
+                            <el-col :xs="24" :sm="12" :md="6">
+                                <el-form label-position="left" inline class="table-expand">
+                                    <el-form-item label="学制">
+                                        <span>{{updateModel['1-5'].class}} 年</span>
+                                    </el-form-item>
+                                </el-form>
+                            </el-col>
+
+                            <el-col :xs="24" :sm="12" :md="6">
+                                <el-form label-position="left" inline class="table-expand">
+                                    <el-form-item label="班级">
+                                        <span>{{updateModel['1-5'].class}} 班</span>
+                                    </el-form-item>
+                                </el-form>
+                            </el-col>
+
+                            <el-col :xs="24" :sm="12" :md="6">
+                                <el-form label-position="left" inline class="table-expand">
+                                    <el-form-item label="座号">
+                                        <span>{{updateModel['1-5'].seat}} 号</span>
+                                    </el-form-item>
+                                </el-form>
+                            </el-col>
+
+
+
+                            <el-col :xs="24" :sm="24" :md="24">
+                                <el-form label-position="left" inline class="table-expand">
+                                    <el-form-item label="联系地址">
+                                    </el-form-item>
+                                    <el-input class="w-100" v-model="updateModel['1-5'].address" clearable></el-input>
+                                </el-form>
+                            </el-col>
+
+                            <el-col :xs="24" :sm="24" :md="24">
+                                <el-form label-position="left" inline class="table-expand">
+                                    <el-form-item label="学生照片">
+                                        <el-image v-if="updateModel['1-5'].studentImg != null && updateModel['1-5'].studentImg != ''" :preview-src-list="[updateModel['1-5'].studentImg]
+                                            " style="width: 10rem;height:10rem;" :src="updateModel['1-5'].studentImg == undefined?'./Storage/undefined.jpg':updateModel['1-5'].studentImg " fit="scale-down">
+                                        </el-image>
+                                        <span v-else> 未录入照片 </span>
+                                        <br>
+                                        <el-button @click="()=>{studentImgUpload()}" type="mini">上传学生照片</el-button>
+                                    </el-form-item>
+                                </el-form>
+
+                                <input id="studentImgUpload" style="display: none;" class="btn" type="file" onchange="management.imgAdd(this,'studentImg')" accept="image/png,image/gif,image/jpeg" />
+
+                            </el-col>
+
+                        </el-row>
+                    </el-row>
+
+                    <span slot="footer" class="dialog-footer">
+                            <el-button @click="()=>{getData();controller['1-5'].update = false}">取 消</el-button>
+                            <el-button type="primary" @click="()=>{}">确 定</el-button>
+                    </span>
+                </el-dialog>
 
                 <el-dialog title="添加学生信息" :visible.sync="controller['1-5'].add" :show-close="true" :close-on-press-escape="true" :close-on-click-modal="false" :fullscreen="true">
                     <el-row>
@@ -949,8 +1090,24 @@
 
                             <el-col :xs="24" :sm="12" :md="6">
                                 <el-form label-position="left" inline class="table-expand">
+                                    <el-form-item label="身份证号码">
+                                        <el-input class="w-100" v-model="addModel['1-5'].idCard" minlength="15" maxlength="18" clearable></el-input>
+                                    </el-form-item>
+                                </el-form>
+                            </el-col>
+
+                            <el-col :xs="24" :sm="12" :md="6">
+                                <el-form label-position="left" inline class="table-expand">
+                                    <el-form-item label="联系电话">
+                                        <el-input class="w-100" v-model="addModel['1-5'].contact" maxlength="20" clearable></el-input>
+                                    </el-form-item>
+                                </el-form>
+                            </el-col>
+
+                            <el-col :xs="24" :sm="12" :md="6">
+                                <el-form label-position="left" inline class="table-expand">
                                     <el-form-item label="年级">
-                                        <el-select v-model="addModel['1-5'].grade" @change="(v)=>{}" filterable placeholder="请选择年级">
+                                        <el-select v-model="addModel['1-5'].grade" @change="(v)=>{getGradeDepartment(v);addModel['1-5'].departmentId = undefined }" filterable placeholder="请选择年级">
                                             <el-option v-for="(v,k) in gradeList" :key="v.grade" :label="v.grade + '级'" :value="v.grade">
                                             </el-option>
                                         </el-select>
@@ -961,7 +1118,7 @@
                             <el-col :xs="24" :sm="12" :md="6">
                                 <el-form label-position="left" inline class="table-expand">
                                     <el-form-item label="院系">
-                                        <el-select v-model="addModel['1-5'].department" @change="(v)=>{}" filterable placeholder="请选择院系">
+                                        <el-select :disabled="addModel['1-5'].grade == null" v-model="addModel['1-5'].departmentId" @change="(v)=>{getGradeMajor(addModel['1-5'].grade,v);addModel['1-5'].majorId = undefined }" filterable placeholder="请选择院系">
                                             <el-option v-for="(v,k) in departmentList" :key="v.departmentId" :label="v.departmentName" :value="v.departmentId">
                                             </el-option>
                                         </el-select>
@@ -970,6 +1127,57 @@
                             </el-col>
 
                             <el-col :xs="24" :sm="12" :md="6">
+                                <el-form label-position="left" inline class="table-expand">
+                                    <el-form-item label="专业">
+                                        <el-select :disabled="addModel['1-5'].departmentId == null" v-model="addModel['1-5'].majorId" @change="(v)=>{getGradeClass(addModel['1-5'].grade,addModel['1-5'].departmentId,v,addModel['1-5'].years);addModel['1-5'].class = undefined }" filterable placeholder="请选择院系">
+                                            <el-option v-for="(v,k) in majorList" :key="v.departmentId + v.majorId" :label="v.majorName" :value="v.majorId">
+                                            </el-option>
+                                        </el-select>
+                                    </el-form-item>
+                                </el-form>
+                            </el-col>
+
+                            <el-col :xs="24" :sm="12" :md="6">
+                                <el-form label-position="left" inline class="table-expand">
+                                    <el-form-item label="学制">
+                                        <!-- <span>{{data.x}}</span> -->
+                                        <el-input-number :disabled="addModel['1-5'].majorId == null" @change="(v)=>{getGradeClass(addModel['1-5'].grade,addModel['1-5'].departmentId,addModel['1-5'].majorId,v);addModel['1-5'].class = undefined }" class="w-100" v-model="addModel['1-5'].years"
+                                            :min="1" :precision="0" :step="1" :max="9"></el-input-number>
+                                    </el-form-item>
+                                </el-form>
+                            </el-col>
+
+                            <el-col :xs="24" :sm="12" :md="6">
+                                <el-form label-position="left" inline class="table-expand">
+                                    <el-form-item label="班级">
+                                        <el-select :disabled="addModel['1-5'].majorId == null" v-model="addModel['1-5'].class" @change="(v)=>{}" filterable placeholder="请选择班级">
+                                            <el-option v-for="(v,k) in classList" :key="v.class" :label="v.class + '班'" :value="v.class">
+                                            </el-option>
+                                        </el-select>
+                                    </el-form-item>
+                                </el-form>
+                            </el-col>
+
+                            <el-col :xs="24" :sm="12" :md="6">
+                                <el-form label-position="left" inline class="table-expand">
+                                    <el-form-item label="座号">
+                                        <!-- <span>{{data.x}}</span> -->
+                                        <el-input-number :disabled="addModel['1-5'].class == null" class="w-100" v-model="addModel['1-5'].seatData" @change="(v)=>{ v < 10?addModel['1-5'].seat = '0'+v:addModel['1-5'].seat = v }" :min="1" :precision="0" :step="1" :max="99"></el-input-number>
+                                    </el-form-item>
+                                </el-form>
+                            </el-col>
+
+
+
+                            <el-col :xs="24" :sm="24" :md="24">
+                                <el-form label-position="left" inline class="table-expand">
+                                    <el-form-item label="联系地址">
+                                    </el-form-item>
+                                    <el-input class="w-100" v-model="addModel['1-5'].address" clearable></el-input>
+                                </el-form>
+                            </el-col>
+
+                            <el-col :xs="24" :sm="24" :md="24">
                                 <el-form label-position="left" inline class="table-expand">
                                     <el-form-item label="学生照片">
                                         <el-image v-if="addModel['1-5'].studentImg != null && addModel['1-5'].studentImg != ''" :preview-src-list="[addModel['1-5'].studentImg]
@@ -980,16 +1188,20 @@
                                         <el-button @click="()=>{studentImgUpload()}" type="mini">上传学生照片</el-button>
                                     </el-form-item>
                                 </el-form>
-                            </el-col>
 
-                            <input id="studentImgUpload" style="display: none;" class="btn" type="file" onchange="management.imgAdd(this,'studentImg')" accept="image/png,image/gif,image/jpeg" />
+                                <input id="studentImgUpload" style="display: none;" class="btn" type="file" onchange="management.imgAdd(this,'studentImg')" accept="image/png,image/gif,image/jpeg" />
+
+                            </el-col>
 
                         </el-row>
                     </el-row>
 
                     <span slot="footer" class="dialog-footer">
                             <el-button @click="()=>{getData();controller['1-5'].add = false}">取 消</el-button>
-                            <el-button type="primary" @click="()=>{addData()}">确 定</el-button>
+                            <el-button type="primary" @click="()=>{
+                                addModel['1-5'].classId = addModel['1-5'].grade + addModel['1-5'].years + addModel['1-5'].departmentId + addModel['1-5'].majorId + addModel['1-5'].class;
+                                addModel['1-5'].studentId = addModel['1-5'].classId + addModel['1-5'].seat;
+                                addData()}">确 定</el-button>
                     </span>
                 </el-dialog>
 
@@ -1633,6 +1845,10 @@
                         '6': './System/Core/API/Class/GetClass/index.php',
                     },
 
+                    delChannel: {},
+                    updateChannel: {
+                        '1-5': './System/Core/API/Management/UpdateStudent/index.php',
+                    },
                     addChannel: {
 
                         '1-5': './System/Core/API/Management/AddStudent/index.php',
@@ -1641,8 +1857,32 @@
 
                     controller: {
                         '1-5': {
-                            add: false
+                            add: false,
+                            update: false,
+                            data: undefined
                         }
+                    },
+
+                    delModel: {},
+                    updateModel: {
+                        '1-5': {
+                            data: {
+                                studentId: undefined,
+                            },
+                            info: {
+                                studentName: undefined,
+
+                                gender: undefined,
+                                idCard: undefined,
+
+                                contact: undefined,
+
+                                address: undefined,
+
+                                studentImg: undefined,
+                            }
+
+                        },
                     },
                     addModel: {
                         '1-5': {
@@ -1650,21 +1890,22 @@
                             studentId: undefined,
                             gender: undefined,
                             departmentId: undefined,
-                            departmentName: undefined,
                             majorId: undefined,
-                            majorName: undefined,
-                            contact: undefined,
-
                             grade: undefined,
-                            years: undefined,
+                            years: 3,
                             class: undefined,
                             classId: undefined,
                             seat: undefined,
                             idCard: undefined,
+
+                            contact: undefined,
+
+
                             address: undefined,
-                            active: undefined,
 
                             studentImg: undefined,
+
+                            seatData: undefined,
                         },
                     },
 
@@ -1876,6 +2117,22 @@
                 studentImgUpload() {
                     $("#studentImgUpload").click()
                 },
+                async imgUpdate(img, x) {
+                    // console.log(img, x)
+                    // 生成一个文件读取的对象
+                    // console.log(img.files[0])
+                    reader = new FileReader();
+                    reader.onload = function(ev) {
+                            // base64码
+                            var imgFile = ev.target.result; //或e.target都是一样的
+                            // console.log(imgFile)
+                            // data[x] = imgFile
+                            // management.addModel[management.index][x] = imgFile
+                            management.$set(management.updateModel[management.index], x, imgFile)
+                        }
+                        //发起异步读取文件请求，读取结果为data:url的字符串形式，
+                    await reader.readAsDataURL(img.files[0])
+                },
                 async imgAdd(img, x) {
                     // console.log(img, x)
                     // 生成一个文件读取的对象
@@ -1892,29 +2149,6 @@
                         //发起异步读取文件请求，读取结果为data:url的字符串形式，
                     await reader.readAsDataURL(img.files[0])
                 },
-                // async getGrade() {
-                //     let post = () => {
-                //         return new Promise(resolve => {
-                //             axios.post('./System/Core/API/Grade/GetGrade/index.php', Qs.stringify({
-                //                     "data": JSON.stringify({}),
-                //                     "filter": JSON.stringify({
-                //                         page: 1,
-                //                         num: 9999999
-                //                     }),
-                //                 }))
-                //                 .then(function(res) {
-                //                     if ('error' in res.data) {
-                //                         management.showError(res.data.error)
-                //                     } else {
-                //                         resolve(res.data)
-                //                     }
-                //                 })
-                //         })
-                //     }
-
-                //     return await post();
-
-                // },
                 getGrade() {
                     axios.post('./System/Core/API/Grade/GetGrade/index.php', Qs.stringify({
                             "data": JSON.stringify({}),
@@ -1933,9 +2167,10 @@
                         })
 
                 },
-                getDepartment() {
-                    axios.post('./System/Core/API/Department/GetDepartment/index.php', Qs.stringify({
+                getGradeDepartment(grade) {
+                    axios.post('./System/Core/API/Grade/GetGrade/index.php', Qs.stringify({
                             "data": JSON.stringify({
+                                'grade': grade,
                                 active: 1
                             }),
                             "filter": JSON.stringify({
@@ -1952,10 +2187,12 @@
                         })
 
                 },
-                getMajor() {
-                    axios.post('./System/Core/API/Major/GetMajor/index.php', Qs.stringify({
+                getGradeMajor(grade, department) {
+                    axios.post('./System/Core/API/Grade/GetGrade/index.php', Qs.stringify({
                             "data": JSON.stringify({
-                                active: 1
+                                'grade': grade,
+                                'departmentId': department,
+                                'active': 1
                             }),
                             "filter": JSON.stringify({
                                 page: 1,
@@ -1970,6 +2207,62 @@
                             }
                         })
 
+                },
+                getGradeClass(grade, department, major, years) {
+                    axios.post('./System/Core/API/Class/GetClass/index.php', Qs.stringify({
+                            "data": JSON.stringify({
+                                'grade': grade,
+                                'departmentId': department,
+                                'majorId': major,
+                                'years': years
+                            }),
+                            "filter": JSON.stringify({
+                                page: 1,
+                                num: 9999999
+                            }),
+                        }))
+                        .then(function(res) {
+                            if ('error' in res.data) {
+                                management.showError(res.data.error)
+                            } else {
+                                management.$set(management, 'classList', res.data.slice(1))
+                            }
+                        })
+
+                },
+                updateData() {
+                    Object.keys(management.updateModel[management.index])
+                        .forEach((k) => {
+                            if (management.updateModel[management.index][k] == null || management.updateModel[management.index][k].length == 0) {
+                                // management.dataModel[management.index][k] = undefined;
+                                management.$set(management.updateModel[management.index], k, undefined)
+                            }
+                        })
+
+                    axios.post(management.updateChannel[management.index], Qs.stringify({
+                            "data": JSON.stringify(
+                                management.updateModel[management.index].data
+                            ),
+                            "info": JSON.stringify(
+                                management.updateModel[management.index].info
+                            ),
+                        }))
+                        .then(function(res) {
+                            if ('error' in res.data) {
+                                management.showError(res.data.error)
+                            }
+                            if ('success' in res.data) {
+                                management.showSuccess(res.data.success)
+                                management.getData()
+                            }
+                            if ('info' in res.data) {
+                                management.showInfo(res.data.info)
+                            }
+                            if ('warning' in res.data) {
+                                management.showWarning(res.data.warning)
+                            }
+                            console.log(res)
+                        })
                 },
                 addData() {
                     Object.keys(management.addModel[management.index])
