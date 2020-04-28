@@ -25,9 +25,9 @@ class FileClass
         }
     }
 
-    public function uploadUserImage($imgData,$fileName=''){
+    public function uploadUserImage($imgData,$fileName='',$identity=null){
         $fileName = strlen($fileName) == 0 ? $this->user : $fileName;
-        $allow_path = '/User/'.$this->identity;
+        $allow_path = $identity == null ? '/User/'.$this->identity : '/User/'.$identity;
         $dir = $this->_root_.$allow_path;
         $file_path = './Storage'.$allow_path;
 

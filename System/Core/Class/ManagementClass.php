@@ -187,7 +187,17 @@ class ManagementClass
         } else {
             $data["departmentName"] = $this->db->selectQuery('departmentName', $this->departmentTable)->andQueryList(array("departmentId" => $data["departmentId"]))->getFetchAssoc()[0]["departmentName"];
             $data["majorName"] = $this->db->selectQuery('majorName', $this->majorTable)->andQueryList(array("departmentId" => $data["departmentId"], "majorId" => $data["majorId"]))->getFetchAssoc()[0]["majorName"];
+
+            if (isset($data["studentImg"])) {
+                $fileManger = new FileClass();
+
+                $data["studentImg"] = $fileManger->uploadUserImage($data["studentImg"], $data['studentId'] . '_' . $data['studentName'], 'Student');
+                if ($data["studentImg"] == null) {
+                    return json_encode(array('error' => '图片上传失败，请稍后再试'), JSON_UNESCAPED_UNICODE);
+                }
+            }
         }
+
 
         $data["active"] = 0;
 
@@ -352,7 +362,7 @@ class ManagementClass
         if (isset($info['studentImg'])) {
             $oImg = $query->getFetchAssoc()[0]['studentImg'];
 
-            $info["studentImg"] = $fileManger->uploadUserImage($info["studentImg"]);
+            $info["studentImg"] = $fileManger->uploadUserImage($info["studentImg"], $data['studentId'] . '_' . $this->db->selectQuery('studentName', $this->studentTable)->andQueryList($data)->selectLimit(1, 1)->getFetchAssoc()[0]['studentName'], 'Student');
             if ($info["studentImg"] == null) {
                 return json_encode(array('error' => '图片上传失败，请稍后再试'), JSON_UNESCAPED_UNICODE);
             }
@@ -399,12 +409,10 @@ class ManagementClass
         $permission = $this->getPermission();
         $acceptList = array();
 
-        if($permission != '0' && $permission != '1')
-        {
+        if ($permission != '0' && $permission != '1') {
 
-            foreach ($this->db->selectDistinctQuery('classId',$this->courseTable)->andQueryList(array('teacherId'=>$_SESSION['ms_id']))->getFetchAssoc() as $k=>$v)
-            {
-                array_push($acceptList,$v['classId']);
+            foreach ($this->db->selectDistinctQuery('classId', $this->courseTable)->andQueryList(array('teacherId' => $_SESSION['ms_id']))->getFetchAssoc() as $k => $v) {
+                array_push($acceptList, $v['classId']);
             }
         }
 
@@ -517,28 +525,20 @@ class ManagementClass
             unset($data['address']);
         }
 
-        if(isset($data["classId"]))
-        {
-            if($permission != '0' && $permission != '1')
-            {
-                if(!in_array($data["classId"],$acceptList))
-                {
-                    return json_encode(array("error"=>"您没有查看该班级学生的权限"),JSON_UNESCAPED_UNICODE);
+        if (isset($data["classId"])) {
+            if ($permission != '0' && $permission != '1') {
+                if (!in_array($data["classId"], $acceptList)) {
+                    return json_encode(array("error" => "您没有查看该班级学生的权限"), JSON_UNESCAPED_UNICODE);
                 }
-            }
-            else{
+            } else {
                 $query->andQuery('classId', "{$data['classId']}");
             }
             unset($data['address']);
-        }
-        else
-        {
-            if($permission != '0' && $permission != '1')
-            {
+        } else {
+            if ($permission != '0' && $permission != '1') {
                 $query->andLeftTripQuery_Or();
-                foreach ($acceptList as $t)
-                {
-                    $query->orQueryList(array('classId'=>$t));
+                foreach ($acceptList as $t) {
+                    $query->orQueryList(array('classId' => $t));
                 }
                 $query->andRightTripQuery_Or();
             }
@@ -547,7 +547,7 @@ class ManagementClass
 
         $query->andQueryList($data);
 
-        return $query->orderBy('grade,departmentId,majorId,years,seat', 1)->selectLimit($page, $num)->getFetchAssocNumJson();
+        return $query->orderBy('grade,departmentId,majorId,years,class,seat', 1)->selectLimit($page, $num)->getFetchAssocNumJson();
     }
 
     /*
@@ -623,6 +623,14 @@ class ManagementClass
             return json_encode(array('error' => "该email地址已注册过"), JSON_UNESCAPED_UNICODE);
         } else {
             $data["departmentName"] = $this->db->selectQuery('departmentName', $this->departmentTable)->andQueryList(array("departmentId" => $data["departmentId"]))->getFetchAssoc()[0]["departmentName"];
+            if (isset($data["teacherImg"])) {
+                $fileManger = new FileClass();
+
+                $data["teacherImg"] = $fileManger->uploadUserImage($data["teacherImg"], $data['teacherId'] . '_' . $data['teacherName'], 'Teacher');
+                if ($data["teacherImg"] == null) {
+                    return json_encode(array('error' => '图片上传失败，请稍后再试'), JSON_UNESCAPED_UNICODE);
+                }
+            }
         }
 
 
@@ -816,8 +824,7 @@ class ManagementClass
 
 
         if (isset($info["permission"])) {
-            if($data["teacherId"] == $_SESSION["ms_id"])
-            {
+            if ($data["teacherId"] == $_SESSION["ms_id"]) {
                 return json_encode(array("error" => "你不能修改自己的权限"), JSON_UNESCAPED_UNICODE);
             }
 
@@ -859,7 +866,7 @@ class ManagementClass
         if (isset($info['teacherImg'])) {
             $oImg = $query->getFetchAssoc()[0]['teacherImg'];
 
-            $info["teacherImg"] = $fileManger->uploadUserImage($info["teacherImg"]);
+            $info["teacherImg"] = $fileManger->uploadUserImage($info["teacherImg"], $data['teacherId'] . '_' . $this->db->selectQuery('teacherName', $this->teacherTable)->andQueryList($data)->selectLimit(1, 1)->getFetchAssoc()[0]['teacherName'], 'Teacher');
             if ($info["teacherImg"] == null) {
                 return json_encode(array('error' => '图片上传失败，请稍后再试'), JSON_UNESCAPED_UNICODE);
             }
@@ -939,19 +946,15 @@ class ManagementClass
             }
         }
 
-        if($data["teacherId"] == $_SESSION["ms_id"])
-        {
+        if ($data["teacherId"] == $_SESSION["ms_id"]) {
             return json_encode(array('error' => "您不能删除自己的账号"), JSON_UNESCAPED_UNICODE);
         }
 
         if ($this->db->selectQuery("*", $this->teacherTable)->andQueryList(array("teacherId" => $data["teacherId"]))->getSelectNum() == 0) {
             return json_encode(array('error' => "该教工不存在"), JSON_UNESCAPED_UNICODE);
-        }
-        else if($permission == '1')
-        {
+        } else if ($permission == '1') {
             $p = $this->db->selectQuery("permission", $this->teacherTable)->andQueryList(array("teacherId" => $data["teacherId"]))->getFetchAssoc()[0]["permission"];
-            if($p == '0' || $p == $permission)
-            {
+            if ($p == '0' || $p == $permission) {
                 return json_encode(array('error' => "您无权删除权限比你更高或相同的账号"), JSON_UNESCAPED_UNICODE);
             }
         }

@@ -121,7 +121,7 @@ foreach ($_POST as $key => $value)
                     {
                         continue;
                     }
-                    die(json_encode(Array('error'=>'非法参数'.$v),JSON_UNESCAPED_UNICODE));
+                    die(json_encode(Array('error'=>'非法参数 '.$v),JSON_UNESCAPED_UNICODE));
                 }
             }
         }
@@ -133,7 +133,7 @@ foreach ($_POST as $key => $value)
                 {
                     continue;
                 }
-                die(json_encode(Array('error'=>'非法参数'.$value),JSON_UNESCAPED_UNICODE));
+                die(json_encode(Array('error'=>'非法参数 '.$value),JSON_UNESCAPED_UNICODE));
             }
         }
     }
