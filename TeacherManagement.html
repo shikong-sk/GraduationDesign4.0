@@ -832,7 +832,13 @@
                         </el-col>
                     </el-row>
 
-                    <el-table :data="data" style="width: 100%" border>
+                    <el-table ref="Table" :data="data" style="width: 100%" border>
+
+                        <el-table-column class="text-center mx-auto">
+                            <el-table-column type="selection" width="35" class="text-center mx-auto">
+                            </el-table-column>
+                        </el-table-column>
+
                         <el-table-column label="学号" width="155" :show-overflow-tooltip="true">
                             <template slot-scope="scope">
 								{{scope.row.studentId}}
