@@ -362,9 +362,12 @@ class ManagementClass
         if (isset($info['studentImg'])) {
             $oImg = $query->getFetchAssoc()[0]['studentImg'];
 
-            $info["studentImg"] = $fileManger->uploadUserImage($info["studentImg"], $data['studentId'] . '_' . $this->db->selectQuery('studentName', $this->studentTable)->andQueryList($data)->selectLimit(1, 1)->getFetchAssoc()[0]['studentName'], 'Student');
-            if ($info["studentImg"] == null) {
-                return json_encode(array('error' => '图片上传失败，请稍后再试'), JSON_UNESCAPED_UNICODE);
+            if ($info['studentImg'] != $oImg) {
+                
+                $info["studentImg"] = $fileManger->uploadUserImage($info["studentImg"], $data['studentId'] . '_' . $this->db->selectQuery('studentName', $this->studentTable)->andQueryList($data)->selectLimit(1, 1)->getFetchAssoc()[0]['studentName'], 'Student');
+                if ($info["studentImg"] == null) {
+                    return json_encode(array('error' => '图片上传失败，请稍后再试'), JSON_UNESCAPED_UNICODE);
+                }
             }
         }
 
@@ -865,10 +868,11 @@ class ManagementClass
 
         if (isset($info['teacherImg'])) {
             $oImg = $query->getFetchAssoc()[0]['teacherImg'];
-
-            $info["teacherImg"] = $fileManger->uploadUserImage($info["teacherImg"], $data['teacherId'] . '_' . $this->db->selectQuery('teacherName', $this->teacherTable)->andQueryList($data)->selectLimit(1, 1)->getFetchAssoc()[0]['teacherName'], 'Teacher');
-            if ($info["teacherImg"] == null) {
-                return json_encode(array('error' => '图片上传失败，请稍后再试'), JSON_UNESCAPED_UNICODE);
+            if ($info['teacherImg'] != $oImg) {
+                $info["teacherImg"] = $fileManger->uploadUserImage($info["teacherImg"], $data['teacherId'] . '_' . $this->db->selectQuery('teacherName', $this->teacherTable)->andQueryList($data)->selectLimit(1, 1)->getFetchAssoc()[0]['teacherName'], 'Teacher');
+                if ($info["teacherImg"] == null) {
+                    return json_encode(array('error' => '图片上传失败，请稍后再试'), JSON_UNESCAPED_UNICODE);
+                }
             }
         }
 
