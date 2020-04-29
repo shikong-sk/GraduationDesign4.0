@@ -325,7 +325,8 @@
                         </el-col>
                     </el-row>
 
-                    <el-table :data="data" style="width: 100%" border>
+                    <el-table :key="1-1" :data="data" style="width: 100%" border>
+
                         <el-table-column label="课程id" width="155" :show-overflow-tooltip="true">
                             <template slot-scope="scope">
 								{{scope.row.courseId}}
@@ -830,13 +831,15 @@
                         <el-col :xs="24" :sm="24" :md="24">
                             <el-button class="w-100" @click="()=>{controller['1-5'].add = true ; getGrade() }">添加</el-button>
                         </el-col>
+
+                        <el-col :xs="24" :sm="24" :md="24">
+                            <el-button class="w-100" type="danger" @click="()=>{batchDel()}">批量删除</el-button>
+                        </el-col>
                     </el-row>
 
-                    <el-table ref="Table" :data="data" style="width: 100%" border>
+                    <el-table v-if="index == '1-5'" ref="Table" :key="1-5" :data="data" style="width: 100%" border>
 
-                        <el-table-column class="text-center mx-auto">
-                            <el-table-column type="selection" width="35" class="text-center mx-auto">
-                            </el-table-column>
+                        <el-table-column class="text-center mx-auto" width="35" type="selection">
                         </el-table-column>
 
                         <el-table-column label="学号" width="155" :show-overflow-tooltip="true">
@@ -950,6 +953,7 @@
                                         updateModel['1-5'].info.bothData = scope.row.both == '0000-00-00'?undefined:scope.row.both 
                                         controller['1-5'].update = true
                                     }" type="text" size="small">修改</el-button>
+                                    <el-button style="padding:5px 0;margin:0 auto" @click="(v)=>{delData(scope.row)}" type="text" size="small">删除</el-button>
 								</div>
 							</template>
                         </el-table-column>
@@ -1877,7 +1881,9 @@
                         '6': './System/Core/API/Class/GetClass/index.php',
                     },
 
-                    delChannel: {},
+                    delChannel: {
+                        '1-5': './System/Core/API/Management/DeleteStudent/index.php',
+                    },
                     updateChannel: {
                         '1-5': './System/Core/API/Management/UpdateStudent/index.php',
                     },
@@ -1894,7 +1900,11 @@
                         }
                     },
 
-                    delModel: {},
+                    delModel: {
+                        '1-5': {
+                            studentId: undefined
+                        }
+                    },
                     updateModel: {
                         '1-5': {
                             data: {
@@ -2151,6 +2161,20 @@
                 })
             },
             methods: {
+                batchDel() {
+                    if (management.$refs.Table.selection.length != 0) {
+                        management.$refs.Table.selection.forEach((x) => {
+                            // console.log(x)
+                            this.delData(x)
+                        })
+                    } else {
+                        management.$message({
+                            showClose: true,
+                            message: '请先选择要删除的项目',
+                            type: 'info'
+                        });
+                    }
+                },
                 studentImgUpload() {
                     $("#studentImgUpload").click()
                 },
@@ -2266,6 +2290,39 @@
                             }
                         })
 
+                },
+                delData(data) {
+                    Object.keys(management.delModel[management.index])
+                        .forEach((k) => {
+                            if (data[k] == null || data[k].length == 0) {
+                                // management.dataModel[management.index][k] = undefined;
+                                management.$set(management.delModel[management.index], k, undefined)
+                            } else {
+                                management.$set(management.delModel[management.index], k, data[k])
+                            }
+                        })
+
+                    axios.post(management.delChannel[management.index], Qs.stringify({
+                            "data": JSON.stringify(
+                                management.delModel[management.index]
+                            ),
+                        }))
+                        .then(function(res) {
+                            if ('error' in res.data) {
+                                management.showError(res.data.error)
+                            }
+                            if ('success' in res.data) {
+                                management.showSuccess(res.data.success)
+                                management.getData()
+                            }
+                            if ('info' in res.data) {
+                                management.showInfo(res.data.info)
+                            }
+                            if ('warning' in res.data) {
+                                management.showWarning(res.data.warning)
+                            }
+                            // console.log(res)
+                        })
                 },
                 updateData() {
                     Object.keys(management.updateModel[management.index])
